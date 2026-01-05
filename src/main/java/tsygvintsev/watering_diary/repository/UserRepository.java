@@ -7,7 +7,7 @@ import tsygvintsev.watering_diary.entity.User;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByLogin(String login);
-    Optional<User> findUserById(Integer id);
+    boolean existsByLogin(String login);
 }

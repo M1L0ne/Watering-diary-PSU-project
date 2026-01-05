@@ -8,6 +8,7 @@ import java.time.LocalTime;
 @Table(name = "Watering_record")
 public class WateringRecord {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, insertable = false, updatable = false)
     private Integer id;
 

@@ -21,22 +21,29 @@ public class UserService {
     }
 
     public User getUserById(Integer id) {
-        return userRepository.findUserById(id)
-                .orElse(null);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Не существует пользователя с таким id."));
     }
 
     public User createUser(User user) {
-        String login = user.getLogin();
+        if (user.getLogin() == null || user.getLogin().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Логин не может быть пустым.");
+        }
 
-        if (userRepository.findById(login).orElse(null) != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Пользователь с таким логином уже существует.");
+        if (userRepository.existsByLogin(user.getLogin())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Пользователь с таким логином уже существует.");
         }
 
         return userRepository.save(user);
     }
 
+
     public User updateUser(Integer id, User updatedUser) {
-        User user = userRepository.findUserById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Не существует пользователя с таким id."
@@ -59,11 +66,8 @@ public class UserService {
     }
 
     public User deleteUser(Integer id) {
-        User user = userRepository.findUserById(id).orElse(null);
-
-        if (user == null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Не существует пользователя с таким id.");
-        }
+        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT,
+                "Не существует пользователя с таким id."));
 
         userRepository.delete(user);
 

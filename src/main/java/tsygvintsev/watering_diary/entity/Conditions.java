@@ -7,6 +7,7 @@ import java.time.LocalDate;
 @Table(name = "Conditions")
 public class Conditions {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, insertable = false, updatable = false)
     private Integer id;
 
