@@ -14,13 +14,13 @@ public class Conditions {
     @Column(name = "user_id")
     private Integer userId;
 
-    @Column(name = "date")
+    @Column(name = "date", nullable = false, unique = true)
     private LocalDate date;
 
-    @Column(name = "temperature", nullable = false)
+    @Column(name = "temperature", nullable = false, unique = true)
     private Integer temperature;
 
-    @Column(name = "watering", nullable = false)
+    @Column(name = "watering", nullable = false, unique = true)
     private Integer watering;
 
     @ManyToOne

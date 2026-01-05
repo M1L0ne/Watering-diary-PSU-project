@@ -15,10 +15,10 @@ public class WateringRecord {
     @Column(name = "user_plant_id")
     private Integer userPlantId;
 
-    @Column(name = "date")
+    @Column(name = "date", nullable = false, unique = true)
     private LocalDate date;
 
-    @Column(name = "time", nullable = false)
+    @Column(name = "time", nullable = false, unique = true)
     private LocalTime time;
 
     @Column(name = "volume_watering", nullable = false)

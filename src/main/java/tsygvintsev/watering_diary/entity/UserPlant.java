@@ -10,13 +10,13 @@ public class UserPlant {
     @Column(name = "id", unique = true, insertable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "name", length = 30)
+    @Column(name = "name", length = 30, unique = true, nullable = false)
     private String name;
 
-    @Column(name = "plant_type_id")
+    @Column(name = "plant_type_id", unique = true, nullable = false)
     private Integer plantTypeId;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", unique = true)
     private Integer userId;
 
     @Column(name = "material_id", nullable = false)
