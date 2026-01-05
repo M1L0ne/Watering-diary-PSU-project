@@ -32,8 +32,15 @@ public class UserController {
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
-    @GetMapping("/login/{login}")
-    public User getUserByLogin(@PathVariable String login) {
-        return userService.getUserByLogin(login);
+    @PatchMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Integer id, @RequestBody User user) {
+        User updatedUser = userService.updateUser(id, user);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<User> deleteUser(@PathVariable Integer id) {
+        User deletedUser = userService.deleteUser(id);
+        return new ResponseEntity<>(deletedUser, HttpStatus.OK);
     }
 }

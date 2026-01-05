@@ -6,23 +6,22 @@ import jakarta.persistence.*;
 @Table(name = "User")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id")
+    @Column(name = "id", unique = true, insertable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "Login", length = 20, nullable = false, unique = true)
+    @Column(name = "login", length = 20, nullable = false, unique = true)
     private String login;
 
-    @Column(name = "Password", length = 16, nullable = false)
+    @Column(name = "password", length = 16, nullable = false)
     private String password;
 
-    @Column(name = "Surname", length = 30)
+    @Column(name = "surname", length = 30)
     private String surname;
 
-    @Column(name = "Name", length = 30)
+    @Column(name = "name", length = 30)
     private String name;
 
-    @Column(name = "Patronymic", length = 30)
+    @Column(name = "patronymic", length = 30)
     private String patronymic;
 
     public User() {}
