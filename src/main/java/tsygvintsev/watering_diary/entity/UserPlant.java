@@ -32,15 +32,15 @@ public class UserPlant {
     private Integer soilLoosenerk;
 
     @ManyToOne
-    @JoinColumn(name = "Plant_type_id", insertable = false, updatable = false)
+    @JoinColumn(name = "plant_type_id", insertable = false, updatable = false)
     private PlantType plantType;
 
     @ManyToOne
-    @JoinColumn(name = "User_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "Material_id", insertable = false, updatable = false)
+    @JoinColumn(name = "material_id", insertable = false, updatable = false)
     private Material material;
 
     public UserPlant() {}
