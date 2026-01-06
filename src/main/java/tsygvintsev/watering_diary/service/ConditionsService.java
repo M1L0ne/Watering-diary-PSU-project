@@ -50,6 +50,11 @@ public class ConditionsService {
                     "Дата не может быть пустой.");
         }
 
+        if (conditions.getDate().isBefore(LocalDate.now().minusDays(7))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Данные устарели, дата старше 7 дней.");
+        }
+
         if (conditions.getTemperature() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Температура не может быть пустой.");
