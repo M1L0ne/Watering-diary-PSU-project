@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой микроклимат - Дневник полива</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Дневник полива растений</h1>
+        <nav>
+            <a href="profile.html">Профиль</a>
+            <a href="plants.html">Мои растения</a>
+            <a href="conditions.html">Мой микроклимат</a>
+            <a href="#" onclick="logout()">Выход</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="conditions-section">
+            <h2>Мой микроклимат</h2>
+
+            <button class="btn btn-primary" onclick="showAddForm()">+ Добавить запись</button>
+
+            <div id="loading">Загрузка...</div>
+            <div id="error" class="error-message" style="display: none;"></div>
+            <div id="success" class="success-message" style="display: none;"></div>
+
+            <div id="conditions-list" style="display: none;"></div>
+
+            <div id="add-form" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeAddForm()">&times;</span>
+                    <h3>Добавить запись микроклимата</h3>
+
+                    <form onsubmit="addCondition(event)">
+                        <div class="form-group">
+                            <label for="add-date" class="required">Дата</label>
+                            <input type="date" id="add-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-temperature" class="required">Температура (°C)</label>
+                            <input type="number" id="add-temperature" required min="-50" max="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="add-watering" class="required">Влажность (%)</label>
+                            <input type="number" id="add-watering" required min="0" max="100">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Добавить</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeAddForm()">Отмена</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="edit-form" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeEditForm()">&times;</span>
+                    <h3>Редактировать запись микроклимата</h3>
+
+                    <form onsubmit="updateCondition(event)">
+                        <input type="hidden" id="edit-id">
+                        <div class="form-group">
+                            <label for="edit-date" class="optional">Дата</label>
+                            <input type="date" id="edit-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-temperature" class="optional">Температура (°C)</label>
+                            <input type="number" id="edit-temperature" min="-50" max="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-watering" class="optional">Влажность (%)</label>
+                            <input type="number" id="edit-watering" min="0" max="100">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeEditForm()">Отмена</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="js/conditions.js"></script>
+</body>
+</html>

@@ -52,7 +52,7 @@ public class ConditionsService {
 
         if (conditions.getDate().isBefore(LocalDate.now().minusDays(7))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Данные устарели, дата старше 7 дней.");
+                    "Данные устарели. Новая дата старше 7 дней.");
         }
 
         if (conditions.getTemperature() == null) {
@@ -87,6 +87,12 @@ public class ConditionsService {
 
         LocalDate newDate = updatedConditions.getDate() != null ?
                 updatedConditions.getDate() : conditions.getDate();
+
+        if (newDate.isBefore(LocalDate.now().minusDays(7))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Данные устарели. Новая дата старше 7 дней.");
+        }
+
         Integer newTemperature = updatedConditions.getTemperature() != null ?
                 updatedConditions.getTemperature() : conditions.getTemperature();
         Integer newWatering = updatedConditions.getWatering() != null ?

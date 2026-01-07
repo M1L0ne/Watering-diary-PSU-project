@@ -23,27 +23,15 @@ public class Material {
         this.wateringK = wateringK;
     }
 
-    public Integer getId() {
-        return id;
-    }
+    public Integer getId() {return id;}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public void setId(Integer id) {this.id = id;}
 
-    public String getName() {
-        return name;
-    }
+    public String getName() {return name;}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) {this.name = name;}
 
-    public Integer getWateringK() {
-        return wateringK;
-    }
+    public Integer getWateringK() {return wateringK;}
 
-    public void setWateringK(Integer wateringK) {
-        this.wateringK = wateringK;
-    }
+    public void setWateringK(Integer wateringK) {this.wateringK = wateringK;}
 }
