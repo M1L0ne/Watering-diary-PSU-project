@@ -88,17 +88,12 @@ public class WateringRecordService {
                     "Запись о поливе этого растения на эту дату уже существует.");
         }
 
-        try {
-            Integer recommendedVolume = calculateWateringVolume(wateringRecord.getUserPlantId());
-
-            Integer errorRate =  recommendedVolume - wateringRecord.getVolumeWatering();
-
-            wateringRecord.setErrorRateK(errorRate);
-
-        } catch (ResponseStatusException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Некоторые данные для этого растения не заполнены.");
+        if (wateringRecord.getDate().isBefore(LocalDate.now().minusDays(7))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Данные устарели. Дата полива старше 7 дней.");
         }
+
+        wateringRecord = autoCalculateErrorRate(wateringRecord);
 
         return wateringRecordRepository.save(wateringRecord);
     }
@@ -110,26 +105,35 @@ public class WateringRecordService {
                         "Не существует записи о поливе с таким id."
                 ));
 
-        if (updatedWateringRecord.getDate() != null &&
-                !updatedWateringRecord.getDate().equals(wateringRecord.getDate())) {
+        LocalDate newDate = updatedWateringRecord.getDate();
+        LocalDate oldDate = wateringRecord.getDate();
+
+        if (newDate != null &&
+                !newDate.equals(oldDate)) {
             if (wateringRecordRepository.existsByUserPlantIdAndDate(
                     wateringRecord.getUserPlantId(),
-                    updatedWateringRecord.getDate())) {
+                    newDate)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,
                         "Запись о поливе этого растения на эту дату уже существует.");
             }
+
+            if (newDate.isBefore(LocalDate.now().minusDays(7))) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Данные устарели. Дата полива старше 7 дней.");
+            }
+
             wateringRecord.setDate(updatedWateringRecord.getDate());
         }
 
         if (updatedWateringRecord.getTime() != null) {
             wateringRecord.setTime(updatedWateringRecord.getTime());
         }
+
         if (updatedWateringRecord.getVolumeWatering() != null) {
             wateringRecord.setVolumeWatering(updatedWateringRecord.getVolumeWatering());
         }
-        if (updatedWateringRecord.getErrorRateK() != null) {
-            wateringRecord.setErrorRateK(updatedWateringRecord.getErrorRateK());
-        }
+
+        wateringRecord = autoCalculateErrorRate(wateringRecord);
 
         return wateringRecordRepository.save(wateringRecord);
     }
@@ -144,7 +148,13 @@ public class WateringRecordService {
         return wateringRecord;
     }
 
-    public Integer calculateWateringVolume(Integer userPlantId) {
+    public WateringRecord getLastWateringRecordByUserPlantId(Integer userPlantId) {
+        return wateringRecordRepository
+                .findFirstByUserPlantIdOrderByDateDesc(userPlantId)
+                .orElse(null);
+    }
+
+    public Integer calculateWateringVolume(Integer userPlantId, WateringRecord wateringRecord) {
         UserPlant userPlant = userPlantRepository.findById(userPlantId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -166,33 +176,58 @@ public class WateringRecordService {
                         HttpStatus.NOT_FOUND,
                         "Не найдены условия для этого пользователя."));
 
-        Integer high = userPlant.getHigh() != null ? userPlant.getHigh() : 30; // см
-        Integer potSize = userPlant.getPotSize() != null ? userPlant.getPotSize() : 15; // см
-        Integer soilLoosenerk = userPlant.getSoilLoosenerk() != null ? userPlant.getSoilLoosenerk() : 10; // %
-        Integer plantWateringK = plantType.getWateringK() != null ? plantType.getWateringK() : 50; // 1-100
-        Integer materialWateringK = material.getWateringK() != null ? material.getWateringK() : 50; // 1-100
-        Integer temperature = conditions.getTemperature(); // градусы
-        Integer humidity = conditions.getWatering(); // % (0-100)
+        int high = userPlant.getHigh() != null ? userPlant.getHigh() : 30;
+        int potSize = userPlant.getPotSize() != null ? userPlant.getPotSize() : 15;
+        int soilLoosenerk = userPlant.getSoilLoosenerk() != null ? userPlant.getSoilLoosenerk() : 10;
+        int plantWateringK = plantType.getWateringK() != null ? plantType.getWateringK() : 50;
+        int materialWateringK = material.getWateringK() != null ? material.getWateringK() : 50;
+        int temperature = conditions.getTemperature();
+        int humidity = conditions.getWatering();
+        int errorRate = wateringRecord != null ? wateringRecord.getErrorRateK(): 0;
 
-        double baseVolume = Math.PI * Math.pow(potSize / 2.0, 2) * (potSize * 0.8) / 10.0; // мл
+        double baseVolume = potSize * 4;
 
-        double highFactor = 1.0 + (high / 100.0);
+        double highFactor = 1.0 + (high / 200.0);
 
-        double plantTypeFactor = plantWateringK / 50.0;
+        double plantTypeFactor = 0.5 + (plantWateringK / 100.0);
 
-        double materialFactor = materialWateringK / 50.0;
+        double materialFactor = 0.7 + (materialWateringK / 100.0);
 
-        double soilFactor = 1.0 + (soilLoosenerk / 100.0);
+        double soilFactor = 1.0 + (soilLoosenerk / 300.0);
 
-        double tempFactor = 1.0 + ((temperature - 20.0) / 50.0); // базовая температура 20
+        double tempFactor = 1.0 + ((temperature - 20.0) / 100.0); // базовая температура 20
         if (tempFactor < 0.5) tempFactor = 0.5;
 
-        double humidityFactor = 1.0 + ((50.0 - humidity) / 100.0); // базовая влажность 50%
+        double humidityFactor = 1.0 + ((50.0 - humidity) / 150.0); // базовая влажность 50%
         if (humidityFactor < 0.5) humidityFactor = 0.5;
 
-        double calculatedVolume = baseVolume * highFactor * plantTypeFactor *
-                materialFactor * soilFactor * tempFactor * humidityFactor;
+        double calculatedVolume = (baseVolume * highFactor * plantTypeFactor *
+                materialFactor * soilFactor * tempFactor * humidityFactor) + errorRate;
 
-        return (int) Math.round(calculatedVolume);
+        return Math.max(0, (int) Math.round(calculatedVolume));
+    }
+
+    public WateringRecord autoCalculateErrorRate(WateringRecord wateringRecord) {
+        try {
+            LocalDate recordDate = wateringRecord.getDate();
+            Integer userPlantId = wateringRecord.getUserPlantId();
+
+            WateringRecord previousRecord = wateringRecordRepository
+                    .findFirstByUserPlantIdAndDateBeforeOrderByDateDesc(userPlantId, recordDate)
+                    .orElse(null);
+
+            Integer recommendedVolume = calculateWateringVolume(
+                    userPlantId, previousRecord);
+
+            Integer errorRate = recommendedVolume - wateringRecord.getVolumeWatering();
+
+            wateringRecord.setErrorRateK(errorRate);
+
+        } catch (ResponseStatusException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Некоторые данные для этого растения не заполнены.");
+        }
+
+        return wateringRecord;
     }
 }

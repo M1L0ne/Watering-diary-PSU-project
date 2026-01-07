@@ -55,7 +55,9 @@ public class WateringRecordController {
     public ResponseEntity<Map<String, Object>> calculateWateringVolume(
             @RequestParam Integer userPlantId) {
 
-        Integer recommendedVolume = wateringRecordService.calculateWateringVolume(userPlantId);
+        WateringRecord lastRecord = wateringRecordService.getLastWateringRecordByUserPlantId(userPlantId);
+
+        Integer recommendedVolume = wateringRecordService.calculateWateringVolume(userPlantId, lastRecord);
 
         Map<String, Object> response = new HashMap<>();
         response.put("userPlantId", userPlantId);

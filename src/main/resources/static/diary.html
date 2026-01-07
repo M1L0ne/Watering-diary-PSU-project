@@ -1,10 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дневник полива - Дневник полива</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<div class="container">
+    <header>
+        <h1>Дневник полива растений</h1>
+        <nav>
+            <a href="plants.html">Мои растения</a>
+            <a href="conditions.html">Мой микроклимат</a>
+            <a href="diary.html">Дневник поливов</a>
+            <a href="references.html">Справочник</a>
+            <a href="profile.html">Профиль</a>
+            <a href="#" onclick="logout()">Выход</a>
+        </nav>
+    </header>
 
+    <main>
+        <div class="diary-section">
+            <h2>Дневник полива</h2>
+
+            <div class="diary-controls">
+                <div class="form-group">
+                    <label for="filter-plant">Фильтр по растению:</label>
+                    <select id="filter-plant" onchange="filterByPlant()">
+                        <option value="">Все растения</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="showAddForm()">+ Добавить запись</button>
+            </div>
+
+            <div id="loading">Загрузка...</div>
+            <div id="error" class="error-message" style="display: none;"></div>
+            <div id="success" class="success-message" style="display: none;"></div>
+
+            <div id="diary-list" style="display: none;"></div>
+
+            <div id="add-form" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeAddForm()">&times;</span>
+                    <h3>Добавить запись полива</h3>
+                    <form onsubmit="addRecord(event)">
+                        <div class="form-group">
+                            <label for="add-plant" class="required">Растение</label>
+                            <select id="add-plant" required onchange="calculateRecommendation()"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-date" class="required">Дата</label>
+                            <input type="date" id="add-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-time" class="required">Время</label>
+                            <input type="time" id="add-time" required>
+                        </div>
+
+                        <div id="recommendation" class="recommendation-card" style="display: none;">
+                            <h4>Рекомендуемый объём</h4>
+                            <p>На основе текущих условий: <strong id="recommended-volume">0</strong> мл</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="add-volume" class="required">Объём воды (мл)</label>
+                            <input type="number" id="add-volume" required min="0">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Добавить</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeAddForm()">Отмена</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="edit-form" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeEditForm()">&times;</span>
+                    <h3>Редактировать запись полива</h3>
+
+                    <form onsubmit="updateRecord(event)">
+                        <input type="hidden" id="edit-id">
+                        <div class="form-group">
+                            <label for="edit-date" class="optional">Дата</label>
+                            <input type="date" id="edit-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-time" class="optional">Время</label>
+                            <input type="time" id="edit-time">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-volume" class="optional">Объём воды (мл)</label>
+                            <input type="number" id="edit-volume" min="1">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeEditForm()">Отмена</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="js/diary.js"></script>
 </body>
 </html>

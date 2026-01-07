@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Справочники - Дневник полива</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Дневник полива растений</h1>
+        <nav>
+            <a href="plants.html">Мои растения</a>
+            <a href="conditions.html">Мой микроклимат</a>
+            <a href="diary.html">Дневник полива</a>
+            <a href="references.html">Справочник</a>
+            <a href="profile.html">Профиль</a>
+            <a href="#" onclick="logout()">Выход</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="references-section">
+            <h2>Справочник</h2>
+
+            <div class="tabs">
+                <button class="tab-button active" onclick="showTab('plant-types')">Типы растений</button>
+                <button class="tab-button" onclick="showTab('materials')">Материалы горшков</button>
+            </div>
+
+            <div id="error" class="error-message" style="display: none;"></div>
+
+            <div id="plant-types-tab" class="tab-content active">
+                <h3>Типы растений</h3>
+                <br>
+
+                <div id="plant-types-loading">Загрузка...</div>
+                <div id="plant-types-list" style="display: none;"></div>
+            </div>
+
+            <div id="materials-tab" class="tab-content">
+                <h3>Материалы горшков</h3>
+                <br>
+
+                <div id="materials-loading">Загрузка...</div>
+                <div id="materials-list" style="display: none;"></div>
+            </div>
+
+            <div id="details-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeDetailsModal()">&times;</span>
+                    <div id="modal-details-content"></div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeDetailsModal()">Закрыть</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="js/references.js"></script>
+</body>
+</html>
