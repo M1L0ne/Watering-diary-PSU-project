@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Дневник полива - Дневник полива</title>
+    <title>Дневник полива</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="container">
     <header>
-        <h1>Дневник полива растений</h1>
+        <h1><a href="plants.html">Дневник полива растений</a></h1>
         <nav>
             <a href="plants.html">Мои растения</a>
             <a href="conditions.html">Мой микроклимат</a>
-            <a href="diary.html">Дневник поливов</a>
-            <a href="references.html">Справочник</a>
+            <a href="diary.html">Дневник полива</a>
             <a href="profile.html">Профиль</a>
+            <a href="references.html">Справочник</a>
             <a href="#" onclick="logout()">Выход</a>
         </nav>
     </header>
@@ -24,13 +25,28 @@
         <div class="diary-section">
             <h2>Дневник полива</h2>
 
-            <div class="diary-controls">
-                <div class="form-group">
-                    <label for="filter-plant">Фильтр по растению:</label>
-                    <select id="filter-plant" onchange="filterByPlant()">
-                        <option value="">Все растения</option>
-                    </select>
+            <div class="filters-container">
+                <div class="filters-box">
+                    <div class="filter-group">
+                        <label for="filter-plant">Растение:</label>
+                        <select id="filter-plant" onchange="filterRecords()">
+                            <option value="">Все растения</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filter-date-from">Дата с:</label>
+                        <input type="date" id="filter-date-from" onchange="filterRecords()">
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filter-date-to">Дата по:</label>
+                        <input type="date" id="filter-date-to" onchange="filterRecords()">
+                    </div>
+
+                    <button class="btn btn-secondary btn-small" onclick="resetFilters()">Сбросить</button>
                 </div>
+
                 <button class="btn btn-primary" onclick="showAddForm()">+ Добавить запись</button>
             </div>
 
@@ -44,6 +60,8 @@
                 <div class="modal-content">
                     <span class="close" onclick="closeAddForm()">&times;</span>
                     <h3>Добавить запись полива</h3>
+                    <div id="window-error-add" class="error-message" style="display: none;"></div>
+
                     <form onsubmit="addRecord(event)">
                         <div class="form-group">
                             <label for="add-plant" class="required">Растение</label>
@@ -79,6 +97,7 @@
                 <div class="modal-content">
                     <span class="close" onclick="closeEditForm()">&times;</span>
                     <h3>Редактировать запись полива</h3>
+                    <div id="window-error-edit" class="error-message" style="display: none;"></div>
 
                     <form onsubmit="updateRecord(event)">
                         <input type="hidden" id="edit-id">

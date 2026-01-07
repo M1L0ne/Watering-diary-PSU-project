@@ -142,15 +142,33 @@ function formatDate(dateString) {
     return date.toLocaleDateString('ru-RU', options);
 }
 
-function filterByPlant() {
+function filterRecords() {
     const plantId = document.getElementById('filter-plant').value;
+    const dateFrom = document.getElementById('filter-date-from').value;
+    const dateTo = document.getElementById('filter-date-to').value;
 
-    if (!plantId) {
-        displayRecords(allRecords);
-    } else {
-        const filtered = allRecords.filter(r => r.userPlantId === parseInt(plantId));
-        displayRecords(filtered);
+    let filtered = allRecords;
+
+    if (plantId) {
+        filtered = filtered.filter(r => r.userPlantId === parseInt(plantId));
     }
+
+    if (dateFrom) {
+        filtered = filtered.filter(r => r.date >= dateFrom);
+    }
+
+    if (dateTo) {
+        filtered = filtered.filter(r => r.date <= dateTo);
+    }
+
+    displayRecords(filtered);
+}
+
+function resetFilters() {
+    document.getElementById('filter-plant').value = '';
+    document.getElementById('filter-date-from').value = '';
+    document.getElementById('filter-date-to').value = '';
+    displayRecords(allRecords);
 }
 
 function showAddForm() {
@@ -220,6 +238,7 @@ async function addRecord(event) {
 
     } catch (error) {
         showError(error.message);
+        showWindowError('window-error-add', error.message);
     }
 }
 
@@ -281,6 +300,7 @@ async function updateRecord(event) {
 
     } catch (error) {
         showError(error.message);
+        showWindowError('window-error-edit', error.message);
     }
 }
 
@@ -313,6 +333,17 @@ function showError(message) {
     setTimeout(() => {
         errorDiv.style.display = 'none';
     }, 5000);
+}
+
+function showWindowError(elementId, message) {
+    const errorDiv = document.getElementById(elementId);
+    if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+        setTimeout(() => {
+            errorDiv.style.display = 'none';
+        }, 5000);
+    }
 }
 
 function showSuccess(message) {

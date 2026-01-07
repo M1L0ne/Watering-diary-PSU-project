@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мои растения - Дневник полива</title>
+    <title>Дневник полива</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="container">
     <header>
-        <h1>Дневник полива растений</h1>
+        <h1><a href="plants.html">Дневник полива растений</a></h1>
         <nav>
             <a href="plants.html">Мои растения</a>
             <a href="conditions.html">Мой микроклимат</a>
-            <a href="diary.html">Дневник поливов</a>
-            <a href="references.html">Справочник</a>
+            <a href="diary.html">Дневник полива</a>
             <a href="profile.html">Профиль</a>
+            <a href="references.html">Справочник</a>
             <a href="#" onclick="logout()">Выход</a>
         </nav>
     </header>
@@ -24,6 +24,10 @@
     <main>
         <div class="plants-section">
             <h2>Мои растения</h2>
+
+            <div class="search-box">
+                <input type="text" id="search-plants" placeholder="Поиск по названию..." oninput="searchPlants()">
+            </div>
 
             <button class="btn btn-primary" onclick="showAddForm()">+ Добавить растение</button>
 
@@ -37,6 +41,7 @@
                 <div class="modal-content">
                     <span class="close" onclick="closeAddForm()">&times;</span>
                     <h3>Добавить растение</h3>
+                    <div id="window-error-add" class="error-message" style="display: none;"></div>
 
                     <form onsubmit="addPlant(event)">
                         <div class="form-group">
@@ -45,7 +50,12 @@
                         </div>
                         <div class="form-group">
                             <label for="add-plant-type" class="required">Тип растения</label>
-                            <select id="add-plant-type" required></select>
+                            <input type="text" id="search-add-plant-type" class="search-input"
+                                   placeholder="Поиск типа растения..."
+                                   oninput="filterAddPlantTypes()">
+                            <select id="add-plant-type" name="plantType" required size="5">
+                                <option value="">Выберите тип</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="add-material" class="required">Материал горшка</label>
@@ -75,6 +85,7 @@
                 <div class="modal-content">
                     <span class="close" onclick="closeEditForm()">&times;</span>
                     <h3>Редактировать растение</h3>
+                    <div id="window-error-edit" class="error-message" style="display: none;"></div>
 
                     <form onsubmit="updatePlant(event)">
                         <input type="hidden" id="edit-id">

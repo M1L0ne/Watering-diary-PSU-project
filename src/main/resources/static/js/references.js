@@ -214,3 +214,19 @@ function logout() {
         window.location.href = 'index.html';
     }
 }
+
+function searchPlantTypes() {
+    const searchText = document.getElementById('search-plant-types').value.toLowerCase();
+    const filteredPlants = allPlantTypes.filter(pt =>
+        pt.name.toLowerCase().includes(searchText)
+    );
+    displayPlantTypes(filteredPlants);
+}
+
+function searchMaterials() {
+    const searchText = document.getElementById('search-materials').value.toLowerCase();
+    const filteredMaterials = allMaterials.filter(m =>
+        m.name.toLowerCase().includes(searchText)
+    );
+    displayMaterials(filteredMaterials);
+}

@@ -23,8 +23,8 @@ async function loadConditions() {
             throw new Error('Ошибка загрузки данных микроклимата');
         }
 
-        const conditions = await response.json();
-        displayConditions(conditions);
+        allConditions  = await response.json();
+        displayConditions(allConditions);
 
         document.getElementById('loading').style.display = 'none';
         document.getElementById('conditions-list').style.display = 'block';
@@ -116,6 +116,7 @@ async function addCondition(event) {
 
     } catch (error) {
         showError(error.message);
+        showWindowError('window-error-add', error.message);
     }
 }
 
@@ -177,6 +178,7 @@ async function updateCondition(event) {
 
     } catch (error) {
         showError(error.message);
+        showWindowError('window-error-edit', error.message);
     }
 }
 
@@ -211,6 +213,17 @@ function showError(message) {
     }, 5000);
 }
 
+function showWindowError(elementId, message) {
+    const errorDiv = document.getElementById(elementId);
+    if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+        setTimeout(() => {
+            errorDiv.style.display = 'none';
+        }, 5000);
+    }
+}
+
 function showSuccess(message) {
     const successDiv = document.getElementById('success');
     successDiv.textContent = message;
@@ -226,4 +239,34 @@ function logout() {
         localStorage.removeItem('currentUserLogin');
         window.location.href = 'index.html';
     }
+}
+
+let allConditions = [];
+
+function searchConditions() {
+    const dateFrom = document.getElementById('search-date-from').value;
+    const dateTo = document.getElementById('search-date-to').value;
+
+    if (!dateFrom && !dateTo) {
+        displayConditions(allConditions);
+        return;
+    }
+
+    let filtered = allConditions;
+
+    if (dateFrom) {
+        filtered = filtered.filter(condition => condition.date >= dateFrom);
+    }
+
+    if (dateTo) {
+        filtered = filtered.filter(condition => condition.date <= dateTo);
+    }
+
+    displayConditions(filtered);
+}
+
+function resetSearch() {
+    document.getElementById('search-date-from').value = '';
+    document.getElementById('search-date-to').value = '';
+    displayConditions(allConditions);
 }

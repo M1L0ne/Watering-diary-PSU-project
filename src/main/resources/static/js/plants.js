@@ -66,8 +66,8 @@ async function loadPlants() {
             throw new Error('Ошибка загрузки растений');
         }
 
-        const plants = await response.json();
-        displayPlants(plants);
+        allPlants = await response.json();
+        displayPlants(allPlants);
 
         document.getElementById('loading').style.display = 'none';
         document.getElementById('plants-list').style.display = 'block';
@@ -167,6 +167,7 @@ async function addPlant(event) {
 
     } catch (error) {
         showError(error.message);
+        showWindowError('window-error-add', error.message);
     }
 }
 
@@ -240,6 +241,7 @@ async function updatePlant(event) {
 
     } catch (error) {
         showError(error.message);
+        showWindowError('window-error-edit', error.message);
     }
 }
 
@@ -274,6 +276,17 @@ function showError(message) {
     }, 5000);
 }
 
+function showWindowError(elementId, message) {
+    const errorDiv = document.getElementById(elementId);
+    if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+        setTimeout(() => {
+            errorDiv.style.display = 'none';
+        }, 5000);
+    }
+}
+
 function showSuccess(message) {
     const successDiv = document.getElementById('success');
     successDiv.textContent = message;
@@ -289,4 +302,24 @@ function logout() {
         localStorage.removeItem('currentUserLogin');
         window.location.href = 'index.html';
     }
+}
+
+function searchPlants() {
+    const searchText = document.getElementById('search-plants').value.toLowerCase();
+    const filteredPlants = allPlants.filter(plant =>
+        plant.name.toLowerCase().includes(searchText)
+    );
+    displayPlants(filteredPlants);
+}
+
+function filterAddPlantTypes() {
+    const searchText = document.getElementById('search-add-plant-type').value.toLowerCase();
+    const select = document.getElementById('add-plant-type');
+
+    const filteredOptions = plantTypes.filter(pt =>
+        pt.name.toLowerCase().includes(searchText)
+    );
+
+    select.innerHTML = '<option value="">Выберите тип</option>' +
+        filteredOptions.map(pt => `<option value="${pt.id}">${pt.name}</option>`).join('');
 }

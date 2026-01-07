@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Справочники - Дневник полива</title>
+    <title>Дневник полива</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="container">
     <header>
-        <h1>Дневник полива растений</h1>
+        <h1><a href="plants.html">Дневник полива растений</a></h1>
         <nav>
             <a href="plants.html">Мои растения</a>
             <a href="conditions.html">Мой микроклимат</a>
             <a href="diary.html">Дневник полива</a>
-            <a href="references.html">Справочник</a>
             <a href="profile.html">Профиль</a>
+            <a href="references.html">Справочник</a>
             <a href="#" onclick="logout()">Выход</a>
         </nav>
     </header>
@@ -35,6 +35,10 @@
                 <h3>Типы растений</h3>
                 <br>
 
+                <div class="search-box">
+                    <input type="text" id="search-plant-types" placeholder="Поиск по названию..." oninput="searchPlantTypes()">
+                </div>
+
                 <div id="plant-types-loading">Загрузка...</div>
                 <div id="plant-types-list" style="display: none;"></div>
             </div>
@@ -42,6 +46,10 @@
             <div id="materials-tab" class="tab-content">
                 <h3>Материалы горшков</h3>
                 <br>
+
+                <div class="search-box">
+                    <input type="text" id="search-materials" placeholder="Поиск по названию..." oninput="searchMaterials()">
+                </div>
 
                 <div id="materials-loading">Загрузка...</div>
                 <div id="materials-list" style="display: none;"></div>
