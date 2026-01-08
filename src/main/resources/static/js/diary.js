@@ -259,10 +259,17 @@ async function calculateRecommendation() {
         document.getElementById('detail-height').textContent = plant.high || 30;
 
         const errorBlock = document.getElementById('detail-error-block');
-        if (lastRecord && lastRecord.errorRateK !== 0 && lastRecord.errorRateK !== null) {
-            let errorText = lastRecord.errorRateK > 0
-                ? `недолив ${lastRecord.errorRateK} мл`
-                : `перелив ${lastRecord.errorRateK} мл`;
+        let errorRateNum = lastRecord.errorRateK;
+        if (lastRecord && errorRateNum !== 0 && errorRateNum !== null) {
+
+            let errorText = '';
+
+            if (errorRateNum < 0) {
+                errorRateNum *= -1;
+                errorText = `перелив ${errorRateNum} мл`;
+            } else {
+                errorText = `недолив ${errorRateNum} мл`;
+            }
 
             document.getElementById('detail-previous-volume').textContent = lastRecord.volumeWatering;
             document.getElementById('detail-previous-error').textContent = errorText;
