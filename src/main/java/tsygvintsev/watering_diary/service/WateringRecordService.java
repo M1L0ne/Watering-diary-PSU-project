@@ -185,7 +185,33 @@ public class WateringRecordService {
         int humidity = conditions.getWatering();
         int errorRate = wateringRecord != null ? wateringRecord.getErrorRateK(): 0;
 
+        double correctionFactor;
+
+        if (plantWateringK <= 25) {
+            // Суккуленты и кактусы
+            correctionFactor = 0.2;
+        } else if (plantWateringK <= 50) {
+            // Умеренные растения
+            correctionFactor = 0.4;
+        } else if (plantWateringK <= 75) {
+            // Влаголюбивые
+            correctionFactor = 0.6;
+        } else {
+            // Очень влаголюбивые
+            correctionFactor = 0.8;
+        }
+
+        int adjustedErrorRate = (int) (errorRate * correctionFactor);
+
         double baseVolume = potSize * 4;
+
+        int maxCorrection = (int) (baseVolume * 0.3);
+
+        if (adjustedErrorRate > maxCorrection) {
+            adjustedErrorRate = maxCorrection;
+        } else if (adjustedErrorRate < -maxCorrection) {
+            adjustedErrorRate = -maxCorrection;
+        }
 
         double highFactor = 1.0 + (high / 200.0);
 
@@ -202,7 +228,7 @@ public class WateringRecordService {
         if (humidityFactor < 0.5) humidityFactor = 0.5;
 
         double calculatedVolume = (baseVolume * highFactor * plantTypeFactor *
-                materialFactor * soilFactor * tempFactor * humidityFactor) + errorRate;
+                materialFactor * soilFactor * tempFactor * humidityFactor) + adjustedErrorRate;
 
         return Math.max(0, (int) Math.round(calculatedVolume));
     }

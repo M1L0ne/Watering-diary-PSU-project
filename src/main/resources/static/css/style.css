@@ -160,7 +160,7 @@ h2 {
 }
 
 .diary-item .error-true {
-    color: #7a2121;
+    color: #d41c1c;
 }
 
 .plant-actions,
@@ -598,4 +598,50 @@ h2 {
 
 .form-group select[size] option:hover {
     background: #e8f8f0;
+}
+
+.calculation-details {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #bae6fd;
+}
+
+.detail-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.detail-label {
+    color: #666;
+    font-weight: 500;
+}
+
+.detail-value {
+    color: #333;
+    font-weight: 600;
+}
+
+.error-highlight {
+    color: #d41c1c;
+    font-weight: 700;
+}
+
+.detail-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-error-group {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #fde68a;
 }

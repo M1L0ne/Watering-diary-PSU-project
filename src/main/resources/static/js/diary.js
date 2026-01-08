@@ -7,6 +7,8 @@ if (!currentUserId) {
 
 let allRecords = [];
 let userPlants = [];
+let plantTypes = [];
+let materials = [];
 
 document.addEventListener('DOMContentLoaded', function() {
     loadData();
@@ -22,12 +24,27 @@ function setDefaultDateTime() {
 
 async function loadData() {
     try {
+        await loadPlantTypes();
+        await loadMaterials();
         await loadPlants();
         await loadRecords();
     } catch (error) {
         showError('Ошибка загрузки данных: ' + error.message);
     }
 }
+
+async function loadPlantTypes() {
+    const response = await fetch(`${API_URL}/plant-types`);
+    if (!response.ok) throw new Error('Ошибка загрузки типов растений');
+    plantTypes = await response.json();
+}
+
+async function loadMaterials() {
+    const response = await fetch(`${API_URL}/materials`);
+    if (!response.ok) throw new Error('Ошибка загрузки материалов');
+    materials = await response.json();
+}
+
 
 async function loadPlants() {
     const response = await fetch(`${API_URL}/user-plants/user/${currentUserId}`);
@@ -41,13 +58,19 @@ function populatePlantSelects() {
     const addSelect = document.getElementById('add-plant');
     const filterSelect = document.getElementById('filter-plant');
 
-    const options = userPlants.map(plant =>
-        `<option value="${plant.id}">${plant.name}</option>`
-    ).join('');
+    const options = userPlants.map(plant => {
+        let plantTypeName = '';
+        if (plant.plantTypeId) {
+            const plantType = getPlantTypeById(plant.plantTypeId);
+            plantTypeName = plantType ? ` (${plantType.name})` : '';
+        }
+        return `<option value="${plant.id}">${plant.name}${plantTypeName}</option>`;
+    }).join('');
 
     addSelect.innerHTML = '<option value="">Выберите растение</option>' + options;
     filterSelect.innerHTML = '<option value="">Все растения</option>' + options;
 }
+
 
 async function loadRecords() {
     try {
@@ -87,6 +110,11 @@ function displayRecords(records) {
     listDiv.innerHTML = records.map(record => {
         const plant = getPlantById(record.userPlantId);
         const plantName = plant ? plant.name : 'Неизвестно';
+        let plantTypeName = '';
+        if (plant) {
+            const plantType = getPlantTypeById(plant.plantTypeId);
+            plantTypeName = plantType ? plantType.name : '';
+        }
 
         let errorRateMessage = '';
         let errorRateClass = 'error-true';
@@ -103,7 +131,7 @@ function displayRecords(records) {
         return `
             <div class="diary-card">
                 <div class="diary-info">
-                    <h3>${plantName}</h3>
+                    <h3>${plantName} (${plantTypeName})</h3>
                     <div class="diary-details">
                         <div class="diary-item">
                             <span class="label">Дата:</span>
@@ -134,6 +162,10 @@ function displayRecords(records) {
 
 function getPlantById(plantId) {
     return userPlants.find(p => p.id === plantId);
+}
+
+function getPlantTypeById(plantTypeId) {
+    return plantTypes.find(pt => pt.id === plantTypeId);
 }
 
 function formatDate(dateString) {
@@ -193,20 +225,62 @@ async function calculateRecommendation() {
 
     try {
         const response = await fetch(`${API_URL}/watering-records/calculate?userPlantId=${plantId}`);
-
         if (!response.ok) {
             document.getElementById('recommendation').style.display = 'none';
             return;
         }
-
         const data = await response.json();
+
+        const plantResponse = await fetch(`${API_URL}/user-plants/${plantId}`);
+        if (!plantResponse.ok) {
+            document.getElementById('recommendation').style.display = 'none';
+            return;
+        }
+        const plant = await plantResponse.json();
+
+        const plantType = plantTypes.find(pt => pt.id === plant.plantTypeId);
+        const material = materials.find(m => m.id === plant.materialId);
+
+        const recordsResponse = await fetch(`${API_URL}/watering-records/plant/${plantId}`);
+        let lastRecord = null;
+        if (recordsResponse.ok) {
+            const records = await recordsResponse.json();
+            if (records.length > 0) {
+                records.sort((a, b) => new Date(b.date) - new Date(a.date));
+                lastRecord = records[0];
+            }
+        }
+
         document.getElementById('recommended-volume').textContent = data.recommendedVolume;
+
+        document.getElementById('detail-plant-type').textContent = plantType ? plantType.name : '-';
+        document.getElementById('detail-material').textContent = material ? material.name : '-';
+        document.getElementById('detail-pot-size').textContent = plant.potSize || 15;
+        document.getElementById('detail-height').textContent = plant.high || 30;
+
+        const errorBlock = document.getElementById('detail-error-block');
+        if (lastRecord && lastRecord.errorRateK !== 0 && lastRecord.errorRateK !== null) {
+            let errorText = lastRecord.errorRateK > 0
+                ? `недолив ${lastRecord.errorRateK} мл`
+                : `перелив ${lastRecord.errorRateK} мл`;
+
+            document.getElementById('detail-previous-volume').textContent = lastRecord.volumeWatering;
+            document.getElementById('detail-previous-error').textContent = errorText;
+            document.getElementById('detail-previous-volume-row').style.display = 'flex';
+            document.getElementById('detail-previous-error-row').style.display = 'flex';
+        } else {
+            document.getElementById('detail-previous-volume-row').style.display = 'none';
+            document.getElementById('detail-previous-error-row').style.display = 'none';
+        }
+
         document.getElementById('recommendation').style.display = 'block';
 
     } catch (error) {
+        console.error('Ошибка загрузки рекомендаций:', error);
         document.getElementById('recommendation').style.display = 'none';
     }
 }
+
 
 async function addRecord(event) {
     event.preventDefault();
