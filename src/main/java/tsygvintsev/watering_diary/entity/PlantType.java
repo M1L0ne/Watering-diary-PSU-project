@@ -2,20 +2,28 @@ package tsygvintsev.watering_diary.entity;
 
 import jakarta.persistence.*;
 
+/**
+ * Сущность типов растений.
+ * Определяет базовую потребность в воде.
+ */
 @Entity
 @Table(name = "Plant_type")
 public class PlantType {
+    /** Уникальный идентификатор типа */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, insertable = false, updatable = false)
     private Integer id;
 
+    /** Название типа растения */
     @Column(name = "name", length = 60, nullable = false, unique = true)
     private String name;
 
+    /** Описание типа растения */
     @Column(name = "description", length = 225)
     private String description;
 
+    /** Коэффициент полива (1-100) */
     @Column(name = "watering_k")
     private Integer wateringK;
 

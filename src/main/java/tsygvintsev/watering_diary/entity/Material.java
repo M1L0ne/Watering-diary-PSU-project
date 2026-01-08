@@ -2,17 +2,24 @@ package tsygvintsev.watering_diary.entity;
 
 import jakarta.persistence.*;
 
+/**
+ * Сущность материалов горшков.
+ * Влияет на скорость испарения влаги.
+ */
 @Entity
 @Table(name = "Material")
 public class Material {
+    /** Уникальный идентификатор материала */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, insertable = false, updatable = false)
     private Integer id;
 
+    /** Название материала */
     @Column(name = "name", length = 30, nullable = false, unique = true)
     private String name;
 
+    /** Коэффициент полива (1-100) */
     @Column(name = "watering_k")
     private Integer wateringK;
 

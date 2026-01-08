@@ -6,9 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tsygvintsev.watering_diary.entity.User;
 import tsygvintsev.watering_diary.service.UserService;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+/**
+ * Контроллер для управления пользователями.
+ * Предоставляет REST API endpoints для операций CRUD над пользователями.
+ */
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -16,31 +21,65 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Получить список всех пользователей.
+     *
+     * @return ResponseEntity со списком всех пользователей и статусом 200 OK
+     */
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
+    /**
+     * Получить пользователя по ID.
+     *
+     * @param id уникальный идентификатор пользователя
+     * @return ResponseEntity с данными пользователя и статусом 200 OK
+     * @throws ResponseStatusException если пользователь с указанным ID не найден
+     */
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id);
+    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
+    /**
+     * Создать нового пользователя.
+     *
+     * @param user объект пользователя для создания
+     * @return ResponseEntity с созданным пользователем и статусом 201 CREATED
+     * @throws ResponseStatusException если пользователь с таким логином уже существует
+     */
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User savedUser = userService.createUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
+    /**
+     * Обновить данные пользователя.
+     *
+     * @param id уникальный идентификатор пользователя
+     * @param user объект с обновляемыми полями
+     * @return ResponseEntity с обновлённым пользователем и статусом 200 OK
+     * @throws ResponseStatusException если пользователь не найден или новый логин уже занят
+     */
     @PatchMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Integer id, @RequestBody User user) {
         User updatedUser = userService.updateUser(id, user);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
+    /**
+     * Удалить пользователя.
+     *
+     * @param id уникальный идентификатор пользователя
+     * @return ResponseEntity со статусом 204 NO_CONTENT
+     * @throws ResponseStatusException если пользователь не найден
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable Integer id) {
-        User deletedUser = userService.deleteUser(id);
-        return new ResponseEntity<>(deletedUser, HttpStatus.OK);
+        userService.deleteUser(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
