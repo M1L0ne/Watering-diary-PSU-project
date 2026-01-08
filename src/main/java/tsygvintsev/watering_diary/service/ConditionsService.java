@@ -50,6 +50,11 @@ public class ConditionsService {
                     "Дата не может быть пустой.");
         }
 
+        if (conditions.getDate().isBefore(LocalDate.now().minusDays(7))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Данные устарели. Новая дата старше 7 дней.");
+        }
+
         if (conditions.getTemperature() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Температура не может быть пустой.");
@@ -80,21 +85,18 @@ public class ConditionsService {
                         "Не существует записи с таким id."
                 ));
 
-        LocalDate newDate = updatedConditions.getDate() != null ?
-                updatedConditions.getDate() : conditions.getDate();
-        Integer newTemperature = updatedConditions.getTemperature() != null ?
-                updatedConditions.getTemperature() : conditions.getTemperature();
-        Integer newWatering = updatedConditions.getWatering() != null ?
-                updatedConditions.getWatering() : conditions.getWatering();
+        LocalDate newDate = updatedConditions.getDate();
+        LocalDate oldDate = conditions.getDate();
 
-        boolean valuesChanged = !newDate.equals(conditions.getDate()) ||
-                !newTemperature.equals(conditions.getTemperature()) ||
-                !newWatering.equals(conditions.getWatering());
-
-        if (updatedConditions.getDate() != null && !updatedConditions.getDate().equals(conditions.getDate())) {
-            if (conditionsRepository.existsByUserIdAndDate(conditions.getUserId(), updatedConditions.getDate())) {
+        if (newDate != null && !newDate.equals(oldDate)) {
+            if (conditionsRepository.existsByUserIdAndDate(conditions.getUserId(), newDate)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,
                         "У этого пользователя уже есть запись на эту дату.");
+            }
+
+            if (newDate.isBefore(LocalDate.now().minusDays(7))) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Данные устарели. Новая дата старше 7 дней.");
             }
         }
 

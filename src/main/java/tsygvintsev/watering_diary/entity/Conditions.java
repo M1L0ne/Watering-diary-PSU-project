@@ -29,12 +29,16 @@ public class Conditions {
 
     public Conditions() {}
 
-    public Conditions(Integer userId, LocalDate date, Integer temperature, Integer watering) {
+    public Conditions(Integer id, Integer userId, LocalDate date, Integer temperature, Integer watering) {
         this.userId = userId;
         this.date = date;
         this.temperature = temperature;
         this.watering = watering;
     }
+
+    public Integer getId() {return id;}
+
+    public void setId(Integer id) {this.id = id;}
 
     public Integer getUserId() {
         return userId;

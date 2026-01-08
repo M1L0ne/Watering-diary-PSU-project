@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дневник полива</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1><a href="plants.html">Дневник полива растений</a></h1>
+        <nav>
+            <a href="plants.html">Мои растения</a>
+            <a href="conditions.html">Мой микроклимат</a>
+            <a href="diary.html">Дневник полива</a>
+            <a href="profile.html">Профиль</a>
+            <a href="references.html">Справочник</a>
+            <a href="#" onclick="logout()">Выход</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="profile-section">
+            <h2>Профиль пользователя</h2>
+
+            <div id="loading">Загрузка...</div>
+            <div id="error" class="error-message" style="display: none;"></div>
+
+            <div id="profile-info" style="display: none;">
+                <div class="info-card">
+                    <div class="info-row">
+                        <label>Логин:</label>
+                        <span id="user-login"></span>
+                    </div>
+                    <div class="info-row">
+                        <label>Фамилия:</label>
+                        <span id="user-surname"></span>
+                    </div>
+                    <div class="info-row">
+                        <label>Имя:</label>
+                        <span id="user-name"></span>
+                    </div>
+                    <div class="info-row">
+                        <label>Отчество:</label>
+                        <span id="user-patronymic"></span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="showEditForm()">Редактировать профиль</button>
+            </div>
+
+            <div id="edit-form" style="display: none;">
+                <form onsubmit="updateProfile(event)">
+                    <div class="form-group">
+                        <label for="edit-password">Новый пароль:</label>
+                        <input type="password" id="edit-password" placeholder="Оставьте пустым, чтобы не менять">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-surname">Фамилия:</label>
+                        <input type="text" id="edit-surname">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-name">Имя:</label>
+                        <input type="text" id="edit-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-patronymic">Отчество:</label>
+                        <input type="text" id="edit-patronymic">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                        <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Отмена</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="js/profile.js"></script>
+</body>
+</html>

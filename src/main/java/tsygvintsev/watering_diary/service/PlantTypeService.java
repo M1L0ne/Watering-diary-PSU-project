@@ -16,7 +16,7 @@ public class PlantTypeService {
     private PlantTypeRepository plantTypeRepository;
 
     public List<PlantType> getAllPlantTypes() {
-        return plantTypeRepository.findAll();
+        return plantTypeRepository.findAllByOrderByNameAsc();
     }
 
     public PlantType getPlantTypeById(Integer id) {

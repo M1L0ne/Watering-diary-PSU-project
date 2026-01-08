@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дневник полива</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1><a href="plants.html">Дневник полива растений</a></h1>
+        <nav>
+            <a href="plants.html">Мои растения</a>
+            <a href="conditions.html">Мой микроклимат</a>
+            <a href="diary.html">Дневник полива</a>
+            <a href="profile.html">Профиль</a>
+            <a href="references.html">Справочник</a>
+            <a href="#" onclick="logout()">Выход</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="plants-section">
+            <h2>Мои растения</h2>
+
+            <div class="search-box">
+                <input type="text" id="search-plants" placeholder="Поиск по названию..." oninput="searchPlants()">
+            </div>
+
+            <button class="btn btn-primary" onclick="showAddForm()">+ Добавить растение</button>
+
+            <div id="loading">Загрузка...</div>
+            <div id="error" class="error-message" style="display: none;"></div>
+            <div id="success" class="success-message" style="display: none;"></div>
+
+            <div id="plants-list" style="display: none;"></div>
+
+            <div id="add-form" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeAddForm()">&times;</span>
+                    <h3>Добавить растение</h3>
+                    <div id="window-error-add" class="error-message" style="display: none;"></div>
+
+                    <form onsubmit="addPlant(event)">
+                        <div class="form-group">
+                            <label for="add-name" class="required">Название</label>
+                            <input type="text" id="add-name" required maxlength="30">
+                        </div>
+                        <div class="form-group">
+                            <label for="add-plant-type" class="required">Тип растения</label>
+                            <input type="text" id="search-add-plant-type" class="search-input"
+                                   placeholder="Поиск типа растения..."
+                                   oninput="filterAddPlantTypes()">
+                            <select id="add-plant-type" name="plantType" required size="5">
+                                <option value="">Выберите тип</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-material" class="required">Материал горшка</label>
+                            <select id="add-material" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-high">Высота (см)</label>
+                            <input type="number" id="add-high" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="add-pot-size">Размер горшка (см)</label>
+                            <input type="number" id="add-pot-size" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="add-soil-loosener">Процент разрыхлителя (%)</label>
+                            <input type="number" id="add-soil-loosener" min="0" max="100">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Добавить</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeAddForm()">Отмена</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="edit-form" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeEditForm()">&times;</span>
+                    <h3>Редактировать растение</h3>
+                    <div id="window-error-edit" class="error-message" style="display: none;"></div>
+
+                    <form onsubmit="updatePlant(event)">
+                        <input type="hidden" id="edit-id">
+                        <div class="form-group">
+                            <label for="edit-name" class="optional">Название</label>
+                            <input type="text" id="edit-name" maxlength="30">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-plant-type" class="optional">Тип растения</label>
+                            <select id="edit-plant-type"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-material" class="optional">Материал горшка</label>
+                            <select id="edit-material"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-high" class="optional">Высота (см)</label>
+                            <input type="number" id="edit-high" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-pot-size" class="optional">Размер горшка (см)</label>
+                            <input type="number" id="edit-pot-size" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-soil-loosener" class="optional">Процент разрыхлителя (%)</label>
+                            <input type="number" id="edit-soil-loosener" min="0" max="100">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeEditForm()">Отмена</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="js/plants.js"></script>
+</body>
+</html>
