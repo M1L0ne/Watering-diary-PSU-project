@@ -188,16 +188,12 @@ public class WateringRecordService {
         double correctionFactor;
 
         if (plantWateringK <= 25) {
-            // Суккуленты и кактусы
             correctionFactor = 0.2;
         } else if (plantWateringK <= 50) {
-            // Умеренные растения
             correctionFactor = 0.4;
         } else if (plantWateringK <= 75) {
-            // Влаголюбивые
             correctionFactor = 0.6;
         } else {
-            // Очень влаголюбивые
             correctionFactor = 0.8;
         }
 

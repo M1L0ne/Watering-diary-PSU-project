@@ -16,12 +16,13 @@ body {
     margin: 0 auto;
 }
 
+/* Заголовок и навигация */
 header {
     background: white;
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 header h1 {
@@ -30,7 +31,7 @@ header h1 {
 }
 
 header h1 a {
-    color: #4a7c59;
+    color: inherit;
     text-decoration: none;
 }
 
@@ -56,7 +57,7 @@ main {
     background: white;
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 h2 {
@@ -64,11 +65,8 @@ h2 {
     margin-bottom: 20px;
 }
 
-.info-card,
-.plant-card,
-.condition-card,
-.diary-card,
-.reference-item {
+/* Карточки */
+.info-card, .plant-card, .condition-card, .diary-card, .reference-item {
     background: #f0fdf4;
     border: 1px solid #d8f3dc;
     border-radius: 8px;
@@ -76,9 +74,7 @@ h2 {
     margin-bottom: 15px;
 }
 
-.plant-card,
-.condition-card,
-.diary-card {
+.plant-card, .condition-card, .diary-card {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -94,9 +90,7 @@ h2 {
     background: #e8f8f0;
 }
 
-.plant-info h3,
-.condition-info h3,
-.diary-info h3 {
+.plant-info h3, .condition-info h3, .diary-info h3 {
     color: #2d6a4f;
     margin-bottom: 10px;
 }
@@ -117,10 +111,8 @@ h2 {
     gap: 10px;
 }
 
-.info-row,
-.condition-item,
-.diary-item,
-.info-item {
+/* Строки данных */
+.info-row, .condition-item, .diary-item, .info-item {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -135,8 +127,7 @@ h2 {
     border-bottom: none;
 }
 
-.info-row label,
-.info-label {
+.info-row label, .info-label {
     font-weight: 600;
     color: #4a7c59;
 }
@@ -145,31 +136,27 @@ h2 {
     width: 150px;
 }
 
-.condition-item .label,
-.diary-item .label {
+.condition-item .label, .diary-item .label, .detail-label {
     color: #666;
     font-weight: 500;
 }
 
-.info-row span,
-.condition-item .value,
-.diary-item .value,
-.info-value {
+.info-row span, .condition-item .value, .diary-item .value, .info-value, .detail-value {
     color: #2d6a4f;
     font-weight: 600;
 }
 
-.diary-item .error-true {
+.diary-item .error-true, .error-highlight {
     color: #d41c1c;
+    font-weight: 700;
 }
 
-.plant-actions,
-.condition-actions,
-.diary-actions {
+.plant-actions, .condition-actions, .diary-actions {
     display: flex;
     gap: 10px;
 }
 
+/* Формы */
 .form-group {
     margin-bottom: 15px;
 }
@@ -186,10 +173,7 @@ h2 {
     color: #dc2626;
 }
 
-.form-group input,
-.form-group select,
-.filter-group select,
-.filter-group input {
+.form-group input, .form-group select, .filter-group select, .filter-group input, .date-range-item input, .search-box input {
     width: 100%;
     padding: 10px;
     border: 1px solid #d1d5db;
@@ -198,12 +182,19 @@ h2 {
     transition: border-color 0.2s;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.filter-group select:focus,
-.filter-group input:focus {
+.form-group input:focus, .form-group select:focus, .filter-group select:focus, .filter-group input:focus, .date-range-item input:focus, .search-box input:focus {
     outline: none;
     border-color: #4a7c59;
+}
+
+.search-box input {
+    max-width: 400px;
+    border-color: #d8f3dc;
+}
+
+.filter-group select, .filter-group input {
+    padding: 8px 12px;
+    min-width: 150px;
 }
 
 .form-actions {
@@ -212,6 +203,7 @@ h2 {
     margin-top: 20px;
 }
 
+/* Кнопки */
 .btn {
     padding: 10px 20px;
     border: none;
@@ -242,12 +234,12 @@ h2 {
 }
 
 .btn-danger {
-    background: #dc2626;
+    background: #ef4444;
     color: white;
 }
 
 .btn-danger:hover {
-    background: #b91c1c;
+    background: #dc2626;
 }
 
 .btn-small {
@@ -259,6 +251,7 @@ h2 {
     width: 100%;
 }
 
+/* Сообщения */
 .error-message {
     background: #fee2e2;
     color: #991b1b;
@@ -283,6 +276,7 @@ h2 {
     color: #4a7c59;
 }
 
+/* Модальные окна */
 .modal {
     display: none;
     position: fixed;
@@ -291,7 +285,7 @@ h2 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0,0,0,0.5);
     overflow-y: auto;
 }
 
@@ -304,8 +298,7 @@ h2 {
     max-width: 500px;
 }
 
-.modal-content h3,
-#modal-details-content h3 {
+.modal-content h3, #modal-details-content h3 {
     color: #2d6a4f;
     margin-bottom: 20px;
 }
@@ -355,6 +348,7 @@ h2 {
     line-height: 1.6;
 }
 
+/* Вкладки */
 .tabs {
     display: flex;
     gap: 10px;
@@ -391,6 +385,7 @@ h2 {
     display: block;
 }
 
+/* Справочник */
 .reference-list {
     display: flex;
     flex-direction: column;
@@ -418,42 +413,14 @@ h2 {
     font-weight: 500;
 }
 
-.category-low {
-    background: #fee2e2;
-    color: #991b1b;
-}
+.category-low { background: #fee2e2; color: #991b1b; }
+.category-medium-low { background: #fef3c7; color: #92400e; }
+.category-medium { background: #dbeafe; color: #1e40af; }
+.category-high { background: #ddd6fe; color: #5b21b6; }
 
-.category-medium-low {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.category-medium {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-.category-high {
-    background: #ddd6fe;
-    color: #5b21b6;
-}
-
-.search-box {
+/* Фильтры */
+.search-box, .filters-container {
     margin: 15px 0;
-}
-
-.search-box input {
-    width: 100%;
-    max-width: 400px;
-    padding: 10px 15px;
-    border: 1px solid #d8f3dc;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-.search-box input:focus {
-    outline: none;
-    border-color: #4a7c59;
 }
 
 .filters-container {
@@ -465,53 +432,40 @@ h2 {
     flex-wrap: wrap;
 }
 
-.filters-box {
+.filters-box, .date-range {
     display: flex;
     gap: 15px;
     align-items: flex-end;
     flex-wrap: wrap;
+}
+
+.filters-box {
     flex: 1;
 }
 
-.filter-group,
-.date-range-item {
+.filter-group, .date-range-item, .detail-group {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
-.filter-group label,
-.date-range-item label {
+.filter-group label, .date-range-item label {
     font-size: 13px;
     color: #555;
     font-weight: 500;
 }
 
-.filter-group select,
-.filter-group input {
-    padding: 8px 12px;
-    min-width: 150px;
+.detail-group {
+    gap: 8px;
 }
 
-.date-range {
+.detail-row {
     display: flex;
-    gap: 15px;
-    align-items: flex-end;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    font-size: 13px;
 }
 
-.date-range-item input {
-    padding: 8px 12px;
-    border: 1px solid #d8f3dc;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-.date-range-item input:focus {
-    outline: none;
-    border-color: #4a7c59;
-}
-
+/* Рекомендации */
 .recommendation-card {
     background: #e0f2fe;
     border: 1px solid #bae6fd;
@@ -525,11 +479,13 @@ h2 {
     margin-bottom: 8px;
 }
 
-.recommendation-card p {
-    color: #333;
-    margin: 0;
+.calculation-details {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #bae6fd;
 }
 
+/* Авторизация */
 .auth-container {
     display: flex;
     justify-content: center;
@@ -541,7 +497,7 @@ h2 {
     background: white;
     padding: 40px;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     width: 100%;
     max-width: 400px;
 }
@@ -580,9 +536,9 @@ h2 {
     margin-bottom: 15px;
 }
 
+/* Специальные элементы форм */
 .search-input {
     margin-bottom: 5px;
-    width: 100%;
 }
 
 .form-group select[size] {
@@ -598,50 +554,4 @@ h2 {
 
 .form-group select[size] option:hover {
     background: #e8f8f0;
-}
-
-.calculation-details {
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #bae6fd;
-}
-
-.detail-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 15px;
-}
-
-.detail-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-}
-
-.detail-label {
-    color: #666;
-    font-weight: 500;
-}
-
-.detail-value {
-    color: #333;
-    font-weight: 600;
-}
-
-.error-highlight {
-    color: #d41c1c;
-    font-weight: 700;
-}
-
-.detail-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.detail-error-group {
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid #fde68a;
 }
