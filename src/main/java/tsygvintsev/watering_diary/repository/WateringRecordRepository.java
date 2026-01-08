@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Репозиторий для работы с записями о поливе растений.
+ */
 @Repository
 public interface WateringRecordRepository extends JpaRepository<WateringRecord, Integer> {
     boolean existsByUserPlantIdAndDate(Integer userPlantId, LocalDate date);

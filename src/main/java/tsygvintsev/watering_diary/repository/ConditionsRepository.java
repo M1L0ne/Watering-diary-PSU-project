@@ -7,6 +7,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Репозиторий для работы с условиями микроклимата.
+ */
 @Repository
 public interface ConditionsRepository extends JpaRepository<Conditions, Integer> {
     boolean existsByUserIdAndDate(Integer userId, LocalDate date);
