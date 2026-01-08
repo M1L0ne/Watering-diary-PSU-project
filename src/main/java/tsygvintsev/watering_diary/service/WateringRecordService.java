@@ -18,6 +18,10 @@ import tsygvintsev.watering_diary.repository.ConditionsRepository;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Сервис для управления записями полива.
+ * Содержит бизнес-логику расчёта рекомендаций и учёта погрешностей полива.
+ */
 @Service
 public class WateringRecordService {
 
@@ -36,10 +40,22 @@ public class WateringRecordService {
     @Autowired
     private ConditionsRepository conditionsRepository;
 
+    /**
+     * Получить все записи полива.
+     *
+     * @return список всех записей полива
+     */
     public List<WateringRecord> getAllWateringRecords() {
         return wateringRecordRepository.findAll();
     }
 
+    /**
+     * Получить запись полива по ID.
+     *
+     * @param id уникальный идентификатор записи
+     * @return найденная запись
+     * @throws ResponseStatusException если запись не найдена
+     */
     public WateringRecord getWateringRecordById(Integer id) {
         return wateringRecordRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -47,6 +63,12 @@ public class WateringRecordService {
                         "Не существует записи о поливе с таким id."));
     }
 
+    /**
+     * Получить все записи полива для конкретного растения.
+     *
+     * @param userPlantId ID растения
+     * @return список записей полива растения
+     */
     public List<WateringRecord> getWateringRecordsByUserPlantId(Integer userPlantId) {
         if (!userPlantRepository.existsById(userPlantId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -55,6 +77,14 @@ public class WateringRecordService {
         return wateringRecordRepository.findByUserPlantId(userPlantId);
     }
 
+    /**
+     * Создать новую запись полива.
+     *
+     * @param wateringRecord объект записи
+     * @return созданная запись с рассчитанной погрешностью
+     * @throws ResponseStatusException если дата полива старше 7 дней, часть полей не заполнена, растение не найдено,
+     * а также если запись полива на эту дату этого растения уже существует
+     */
     public WateringRecord createWateringRecord(WateringRecord wateringRecord) {
         if (wateringRecord.getUserPlantId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -98,6 +128,16 @@ public class WateringRecordService {
         return wateringRecordRepository.save(wateringRecord);
     }
 
+    /**
+     * Обновить запись полива (частичное обновление).
+     * При изменении volumeWatering пересчитывается errorRateK.
+     *
+     * @param id уникальный идентификатор записи
+     * @param updatedWateringRecord объект с обновляемыми полями
+     * @return обновлённая запись
+     * @throws ResponseStatusException если дата полива старше 7 дней, запись полива не найдена,
+     * а также если запись полива на эту дату этого растения уже существует
+     */
     public WateringRecord updateWateringRecord(Integer id, WateringRecord updatedWateringRecord) {
         WateringRecord wateringRecord = wateringRecordRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -138,6 +178,12 @@ public class WateringRecordService {
         return wateringRecordRepository.save(wateringRecord);
     }
 
+    /**
+     * Удалить запись полива.
+     *
+     * @param id уникальный идентификатор записи
+     * @throws ResponseStatusException если запись не найдена
+     */
     public WateringRecord deleteWateringRecord(Integer id) {
         WateringRecord wateringRecord = wateringRecordRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -148,12 +194,27 @@ public class WateringRecordService {
         return wateringRecord;
     }
 
+    /**
+     * Получить последнюю запись полива для растения.
+     *
+     * @param userPlantId ID растения
+     * @return последняя запись полива или null, если записей нет
+     */
     public WateringRecord getLastWateringRecordByUserPlantId(Integer userPlantId) {
         return wateringRecordRepository
                 .findFirstByUserPlantIdOrderByDateDesc(userPlantId)
                 .orElse(null);
     }
 
+    /**
+     * Рассчитать рекомендуемый объём полива для растения.
+     * Учитывает все параметры растения, условия микроклимата и предыдущие ошибки.
+     *
+     * @param userPlantId ID растения
+     * @param wateringRecord последняя запись полива
+     * @return рекомендуемый объём полива в мл
+     * @throws ResponseStatusException если растение, тип растения, материал или условия не найдены
+     */
     public Integer calculateWateringVolume(Integer userPlantId, WateringRecord wateringRecord) {
         UserPlant userPlant = userPlantRepository.findById(userPlantId)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -229,6 +290,13 @@ public class WateringRecordService {
         return Math.max(0, (int) Math.round(calculatedVolume));
     }
 
+    /**
+     * Автоматически рассчитать погрешность полива.
+     *
+     * @param wateringRecord запись полива
+     * @return погрешность в мл
+     * @throws ResponseStatusException часть данных полива не заполнена
+     */
     public WateringRecord autoCalculateErrorRate(WateringRecord wateringRecord) {
         try {
             LocalDate recordDate = wateringRecord.getDate();

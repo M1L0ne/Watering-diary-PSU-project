@@ -78,6 +78,6 @@ public class MaterialController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Material> deleteMaterial(@PathVariable Integer id) {
-        return new ResponseEntity<>(materialService.deleteMaterial(id), HttpStatus.OK);
+        return new ResponseEntity<>(materialService.deleteMaterial(id), HttpStatus.NO_CONTENT);
     }
 }

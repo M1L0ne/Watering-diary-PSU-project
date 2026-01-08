@@ -78,6 +78,6 @@ public class PlantTypeController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<PlantType> deletePlantType(@PathVariable Integer id) {
-        return new ResponseEntity<>(plantTypeService.deletePlantType(id), HttpStatus.OK);
+        return new ResponseEntity<>(plantTypeService.deletePlantType(id), HttpStatus.NO_CONTENT);
     }
 }

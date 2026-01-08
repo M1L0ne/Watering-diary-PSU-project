@@ -93,7 +93,7 @@ public class WateringRecordController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<WateringRecord> deleteWateringRecord(@PathVariable Integer id) {
-        return new ResponseEntity<>(wateringRecordService.deleteWateringRecord(id), HttpStatus.OK);
+        return new ResponseEntity<>(wateringRecordService.deleteWateringRecord(id), HttpStatus.NO_CONTENT);
     }
 
     /**

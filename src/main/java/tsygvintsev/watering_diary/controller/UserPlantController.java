@@ -89,6 +89,6 @@ public class UserPlantController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<UserPlant> deleteUserPlant(@PathVariable Integer id) {
-        return new ResponseEntity<>(userPlantService.deleteUserPlant(id), HttpStatus.OK);
+        return new ResponseEntity<>(userPlantService.deleteUserPlant(id), HttpStatus.NO_CONTENT);
     }
 }

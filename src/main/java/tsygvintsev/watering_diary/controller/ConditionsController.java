@@ -89,6 +89,6 @@ public class ConditionsController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Conditions> deleteConditions(@PathVariable Integer id) {
-        return new ResponseEntity<>(conditionsService.deleteConditions(id), HttpStatus.OK);
+        return new ResponseEntity<>(conditionsService.deleteConditions(id), HttpStatus.NO_CONTENT);
     }
 }
