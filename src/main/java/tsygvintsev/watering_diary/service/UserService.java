@@ -9,16 +9,32 @@ import tsygvintsev.watering_diary.repository.UserRepository;
 
 import java.util.List;
 
+/**
+ * Сервис для управления пользователями.
+ * Содержит бизнес-логику для операций CRUD над пользователями.
+ */
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Получить список всех пользователей.
+     *
+     * @return список всех пользователей
+     */
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    /**
+     * Получить пользователя по ID.
+     *
+     * @param id уникальный идентификатор пользователя
+     * @return найденный пользователь
+     * @throws ResponseStatusException если пользователь не найден
+     */
     public User getUserById(Integer id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -26,6 +42,13 @@ public class UserService {
                         "Не существует пользователя с таким id."));
     }
 
+    /**
+     * Создать нового пользователя.
+     *
+     * @param user объект пользователя
+     * @return созданный пользователь
+     * @throws ResponseStatusException если пользователь с таким логином уже существует или логин пуст
+     */
     public User createUser(User user) {
         if (user.getLogin() == null || user.getLogin().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -40,7 +63,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
-
+    /**
+     * Обновить данные пользователя.
+     *
+     * @param id уникальный идентификатор пользователя
+     * @param updatedUser объект с обновляемыми полями
+     * @return обновлённый пользователь
+     * @throws ResponseStatusException если пользователь не найден
+     */
     public User updateUser(Integer id, User updatedUser) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -64,12 +94,16 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User deleteUser(Integer id) {
+    /**
+     * Удалить пользователя.
+     *
+     * @param id уникальный идентификатор пользователя
+     * @throws ResponseStatusException если пользователь не найден
+     */
+    public void deleteUser(Integer id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT,
                 "Не существует пользователя с таким id."));
 
         userRepository.delete(user);
-
-        return user;
     }
 }

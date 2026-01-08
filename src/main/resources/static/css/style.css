@@ -16,7 +16,6 @@ body {
     margin: 0 auto;
 }
 
-/* Заголовок и навигация */
 header {
     background: white;
     padding: 20px;
@@ -65,7 +64,6 @@ h2 {
     margin-bottom: 20px;
 }
 
-/* Карточки */
 .info-card, .plant-card, .condition-card, .diary-card, .reference-item {
     background: #f0fdf4;
     border: 1px solid #d8f3dc;
@@ -111,7 +109,6 @@ h2 {
     gap: 10px;
 }
 
-/* Строки данных */
 .info-row, .condition-item, .diary-item, .info-item {
     display: flex;
     align-items: center;
@@ -156,7 +153,6 @@ h2 {
     gap: 10px;
 }
 
-/* Формы */
 .form-group {
     margin-bottom: 15px;
 }
@@ -203,7 +199,6 @@ h2 {
     margin-top: 20px;
 }
 
-/* Кнопки */
 .btn {
     padding: 10px 20px;
     border: none;
@@ -251,7 +246,6 @@ h2 {
     width: 100%;
 }
 
-/* Сообщения */
 .error-message {
     background: #fee2e2;
     color: #991b1b;
@@ -276,7 +270,6 @@ h2 {
     color: #4a7c59;
 }
 
-/* Модальные окна */
 .modal {
     display: none;
     position: fixed;
@@ -348,7 +341,6 @@ h2 {
     line-height: 1.6;
 }
 
-/* Вкладки */
 .tabs {
     display: flex;
     gap: 10px;
@@ -385,7 +377,6 @@ h2 {
     display: block;
 }
 
-/* Справочник */
 .reference-list {
     display: flex;
     flex-direction: column;
@@ -418,7 +409,6 @@ h2 {
 .category-medium { background: #dbeafe; color: #1e40af; }
 .category-high { background: #ddd6fe; color: #5b21b6; }
 
-/* Фильтры */
 .search-box, .filters-container {
     margin: 15px 0;
 }
@@ -465,7 +455,6 @@ h2 {
     font-size: 13px;
 }
 
-/* Рекомендации */
 .recommendation-card {
     background: #e0f2fe;
     border: 1px solid #bae6fd;
@@ -485,7 +474,6 @@ h2 {
     border-top: 1px solid #bae6fd;
 }
 
-/* Авторизация */
 .auth-container {
     display: flex;
     justify-content: center;
@@ -536,7 +524,6 @@ h2 {
     margin-bottom: 15px;
 }
 
-/* Специальные элементы форм */
 .search-input {
     margin-bottom: 5px;
 }

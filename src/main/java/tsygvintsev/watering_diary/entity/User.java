@@ -2,26 +2,35 @@ package tsygvintsev.watering_diary.entity;
 
 import jakarta.persistence.*;
 
+/**
+ * Сущность пользователя системы.
+ */
 @Entity
 @Table(name = "User")
 public class User {
+    /** Уникальный идентификатор пользователя */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, insertable = false, updatable = false)
     private Integer id;
 
+    /** Логин пользователя */
     @Column(name = "login", length = 20, nullable = false, unique = true)
     private String login;
 
+    /** Пароль пользователя */
     @Column(name = "password", length = 16, nullable = false)
     private String password;
 
+    /** Фамилия пользователя */
     @Column(name = "surname", length = 30)
     private String surname;
 
+    /** Имя пользователя */
     @Column(name = "name", length = 30)
     private String name;
 
+    /** Отчество пользователя */
     @Column(name = "patronymic", length = 30)
     private String patronymic;
 

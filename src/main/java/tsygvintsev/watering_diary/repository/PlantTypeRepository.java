@@ -7,6 +7,9 @@ import tsygvintsev.watering_diary.entity.UserPlant;
 
 import java.util.List;
 
+/**
+ * Репозиторий для работы с типами растений.
+ */
 @Repository
 public interface PlantTypeRepository extends JpaRepository<PlantType, Integer> {
     boolean existsByName(String name);

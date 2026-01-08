@@ -7,6 +7,10 @@ import tsygvintsev.watering_diary.entity.PlantType;
 import tsygvintsev.watering_diary.repository.MaterialRepository;
 import tsygvintsev.watering_diary.repository.PlantTypeRepository;
 
+/**
+ * Класс для начальной загрузки данных типов растений и материалов горшков в базу.
+ * Выполняется автоматически при старте приложения.
+ */
 @Component
 public class ReferencesSeeder implements CommandLineRunner {
 

@@ -3,23 +3,32 @@ package tsygvintsev.watering_diary.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+/**
+ * Сущность условий микроклимата.
+ * Влияет на расчёт объёма полива.
+ */
 @Entity
 @Table(name = "Conditions")
 public class Conditions {
+    /** Уникальный идентификатор записи */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, insertable = false, updatable = false)
     private Integer id;
 
+    /** ID пользователя */
     @Column(name = "user_id")
     private Integer userId;
 
+    /** Дата */
     @Column(name = "date", nullable = false, unique = true)
     private LocalDate date;
 
+    /** Температура в градусах Цельсия */
     @Column(name = "temperature", nullable = false, unique = true)
     private Integer temperature;
 
+    /** Влажность в % */
     @Column(name = "watering", nullable = false, unique = true)
     private Integer watering;
 

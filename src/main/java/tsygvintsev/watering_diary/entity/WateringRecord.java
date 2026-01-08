@@ -4,26 +4,40 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * Сущность записи полива.
+ * Хранит историю поливов с погрешностью относительно рекомендации.
+ */
 @Entity
 @Table(name = "Watering_record")
 public class WateringRecord {
+    /** Уникальный идентификатор записи */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, insertable = false, updatable = false)
     private Integer id;
 
+    /** ID растения пользователя */
     @Column(name = "user_plant_id")
     private Integer userPlantId;
 
+    /** Дата */
     @Column(name = "date", nullable = false, unique = true)
     private LocalDate date;
 
+    /** Время */
     @Column(name = "time", nullable = false, unique = true)
     private LocalTime time;
 
+    /** Объём полива в мл */
     @Column(name = "volume_watering", nullable = false)
     private Integer volumeWatering;
 
+    /**
+     * Погрешность полива в мл
+     * Положительное значение - недолив, отрицательное - перелив.
+     * Используется для коррекции следующих рекомендаций.
+     */
     @Column(name = "error_rate_k", nullable = false)
     private Integer errorRateK;
 

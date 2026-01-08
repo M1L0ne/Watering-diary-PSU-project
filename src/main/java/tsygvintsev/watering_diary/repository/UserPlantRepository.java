@@ -6,6 +6,9 @@ import tsygvintsev.watering_diary.entity.UserPlant;
 
 import java.util.List;
 
+/**
+ * Репозиторий для работы с растениями пользователей.
+ */
 @Repository
 public interface UserPlantRepository extends JpaRepository<UserPlant, Integer> {
     boolean existsByNameAndPlantTypeIdAndUserId(String name, Integer plantTypeId, Integer userId);

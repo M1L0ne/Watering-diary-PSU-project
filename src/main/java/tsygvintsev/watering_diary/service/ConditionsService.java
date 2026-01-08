@@ -11,6 +11,10 @@ import tsygvintsev.watering_diary.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Сервис для управления условиями микроклимата.
+ * Хранит данные о температуре и влажности для расчёта полива.
+ */
 @Service
 public class ConditionsService {
 
@@ -20,10 +24,22 @@ public class ConditionsService {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Получить все записи условий микроклимата.
+     *
+     * @return список всех условий
+     */
     public List<Conditions> getAllConditions() {
         return conditionsRepository.findAll();
     }
 
+    /**
+     * Получить условия микроклимата по ID.
+     *
+     * @param id уникальный идентификатор записи
+     * @return найденные условия
+     * @throws ResponseStatusException если запись не найдена
+     */
     public Conditions getConditionsById(Integer id) {
         return conditionsRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -31,6 +47,13 @@ public class ConditionsService {
                         "Не существует записи с таким id."));
     }
 
+    /**
+     * Получить все условия микроклимата конкретного пользователя.
+     *
+     * @param userId ID пользователя
+     * @return список условий пользователя
+     * @throws ResponseStatusException если пользователь не найден
+     */
     public List<Conditions> getConditionsByUserId(Integer userId) {
         if (!userRepository.existsById(userId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -39,6 +62,14 @@ public class ConditionsService {
         return conditionsRepository.findByUserId(userId);
     }
 
+    /**
+     * Создать новую запись условий микроклимата.
+     *
+     * @param conditions объект условий
+     * @return созданная запись
+     * @throws ResponseStatusException если пользователь не найден, дата старше 7 дней,
+     * часть полей не заполнена или уже есть запись на эту дату
+     */
     public Conditions createConditions(Conditions conditions) {
         if (conditions.getUserId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -78,6 +109,14 @@ public class ConditionsService {
         return conditionsRepository.save(conditions);
     }
 
+    /**
+     * Обновить условия.
+     *
+     * @param id уникальный идентификатор записи
+     * @param updatedConditions объект с обновляемыми полями
+     * @return обновлённая запись
+     * @throws ResponseStatusException если запись не найдена, дата старше 7 дней или уже есть запись на эту дату
+     */
     public Conditions updateConditions(Integer id, Conditions updatedConditions) {
         Conditions conditions = conditionsRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -113,6 +152,12 @@ public class ConditionsService {
         return conditionsRepository.save(conditions);
     }
 
+    /**
+     * Удалить запись условий.
+     *
+     * @param id уникальный идентификатор записи
+     * @throws ResponseStatusException если запись не найдена
+     */
     public Conditions deleteConditions(Integer id) {
         Conditions conditions = conditionsRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(

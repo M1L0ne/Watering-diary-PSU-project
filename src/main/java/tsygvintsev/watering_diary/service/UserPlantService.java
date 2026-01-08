@@ -12,6 +12,10 @@ import tsygvintsev.watering_diary.repository.MaterialRepository;
 
 import java.util.List;
 
+/**
+ * Сервис для управления растениями пользователей.
+ * Содержит бизнес-логику для операций CRUD над растениями.
+ */
 @Service
 public class UserPlantService {
     @Autowired
@@ -26,10 +30,22 @@ public class UserPlantService {
     @Autowired
     private MaterialRepository materialRepository;
 
+    /**
+     * Получить список всех растений пользователей.
+     *
+     * @return список всех растений
+     */
     public List<UserPlant> getAllUserPlants() {
         return userPlantRepository.findAll();
     }
 
+    /**
+     * Получить растение пользователя по ID.
+     *
+     * @param id уникальный идентификатор растения
+     * @return найденное растение
+     * @throws ResponseStatusException если растение не найдено
+     */
     public UserPlant getUserPlantById(Integer id) {
         return userPlantRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -37,6 +53,12 @@ public class UserPlantService {
                         "Не существует растения с таким id."));
     }
 
+    /**
+     * Получить все растения конкретного пользователя.
+     *
+     * @param userId ID пользователя
+     * @return список растений пользователя
+     */
     public List<UserPlant> getUserPlantsByUserId(Integer userId) {
         if (!userRepository.existsById(userId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -45,6 +67,14 @@ public class UserPlantService {
         return userPlantRepository.findByUserId(userId);
     }
 
+    /**
+     * Создать новое растение.
+     *
+     * @param userPlant объект растения
+     * @return созданное растение
+     * @throws ResponseStatusException если пользователь, тип растения или материал не найдены,
+     * а также если пусты или уже заняты
+     */
     public UserPlant createUserPlant(UserPlant userPlant) {
         if (userPlant.getName() == null || userPlant.getName().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -92,6 +122,15 @@ public class UserPlantService {
         return userPlantRepository.save(userPlant);
     }
 
+    /**
+     * Обновить данные растения.
+     *
+     * @param id уникальный идентификатор растения
+     * @param updatedUserPlant объект с обновляемыми полями
+     * @return обновлённое растение
+     * @throws ResponseStatusException если растение, тип материала или тип растения не найдены,
+     * а также если пусто название растения или у пользователя оно уже есть
+     */
     public UserPlant updateUserPlant(Integer id, UserPlant updatedUserPlant) {
         UserPlant userPlant = userPlantRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -154,6 +193,12 @@ public class UserPlantService {
         return userPlantRepository.save(userPlant);
     }
 
+    /**
+     * Удалить растение.
+     *
+     * @param id уникальный идентификатор растения
+     * @throws ResponseStatusException если растение не найдено
+     */
     public UserPlant deleteUserPlant(Integer id) {
         UserPlant userPlant = userPlantRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
