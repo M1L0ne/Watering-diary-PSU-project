@@ -2,16 +2,23 @@ package tsygvintsev.watering_diary.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalDate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tsygvintsev.watering_diary.entity.WateringRecord;
 import tsygvintsev.watering_diary.service.WateringRecordService;
 import org.springframework.web.server.ResponseStatusException;
-
+import jakarta.servlet.http.HttpServletResponse;
+import tsygvintsev.watering_diary.util.WateringRecordExcelExporter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 /**
  * Контроллер для управления записями полива растений.
@@ -118,5 +125,35 @@ public class WateringRecordController {
         response.put("unit", "мл");
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * Экспортировать отфильтрованные записи полива в Excel-файл.
+     *
+     * @param plantId ID растения для фильтрации
+     * @param dateFrom начальная дата
+     * @param dateTo конечная дата
+     * @throws IOException при ошибке генерации
+     */
+    @GetMapping("/export/excel")
+    public void exportToExcel(
+            @RequestParam(required = false) Integer plantId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
+            HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/octet-stream");
+
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=watering_records_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        List<WateringRecord> listRecords = wateringRecordService.getFilteredRecords(plantId, dateFrom, dateTo);
+
+        WateringRecordExcelExporter excelExporter = new WateringRecordExcelExporter(listRecords);
+        excelExporter.export(response);
     }
 }

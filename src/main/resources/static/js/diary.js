@@ -259,10 +259,17 @@ async function calculateRecommendation() {
         document.getElementById('detail-height').textContent = plant.high || 30;
 
         const errorBlock = document.getElementById('detail-error-block');
-        if (lastRecord && lastRecord.errorRateK !== 0 && lastRecord.errorRateK !== null) {
-            let errorText = lastRecord.errorRateK > 0
-                ? `недолив ${lastRecord.errorRateK} мл`
-                : `перелив ${lastRecord.errorRateK} мл`;
+        let errorRateNum = lastRecord.errorRateK;
+        if (lastRecord && errorRateNum !== 0 && errorRateNum !== null) {
+
+            let errorText = '';
+
+            if (errorRateNum < 0) {
+                errorRateNum *= -1;
+                errorText = `перелив ${errorRateNum} мл`;
+            } else {
+                errorText = `недолив ${errorRateNum} мл`;
+            }
 
             document.getElementById('detail-previous-volume').textContent = lastRecord.volumeWatering;
             document.getElementById('detail-previous-error').textContent = errorText;
@@ -436,3 +443,23 @@ function logout() {
         window.location.href = 'index.html';
     }
 }
+
+function exportToExcel() {
+    const plantId = document.getElementById('filter-plant').value;
+    const dateFrom = document.getElementById('filter-date-from').value;
+    const dateTo = document.getElementById('filter-date-to').value;
+
+    let url = `${API_URL}/watering-records/export/excel`;
+    const params = new URLSearchParams();
+
+    if (plantId) params.append('plantId', plantId);
+    if (dateFrom) params.append('dateFrom', dateFrom);
+    if (dateTo) params.append('dateTo', dateTo);
+
+    if (params.toString()) {
+        url += '?' + params.toString();
+    }
+
+    window.location.href = url;
+}
+
