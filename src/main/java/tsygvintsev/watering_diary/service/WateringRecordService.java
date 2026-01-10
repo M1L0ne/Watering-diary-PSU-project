@@ -14,8 +14,8 @@ import tsygvintsev.watering_diary.entity.Conditions;
 import tsygvintsev.watering_diary.repository.PlantTypeRepository;
 import tsygvintsev.watering_diary.repository.MaterialRepository;
 import tsygvintsev.watering_diary.repository.ConditionsRepository;
-
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 import java.util.List;
 
 /**
@@ -75,6 +75,44 @@ public class WateringRecordService {
                     "Не существует растения пользователя с таким id.");
         }
         return wateringRecordRepository.findByUserPlantId(userPlantId);
+    }
+
+    /**
+     * Получить отфильтрованные записи полива.
+     *
+     * @param plantId ID растения (необязательно)
+     * @param dateFrom начальная дата (необязательно)
+     * @param dateTo конечная дата (необязательно)
+     * @return список записей полива
+     */
+    public List<WateringRecord> getFilteredRecords(Integer plantId, LocalDate dateFrom, LocalDate dateTo) {
+        List<WateringRecord> records;
+
+        if (plantId != null) {
+            if (!userPlantRepository.existsById(plantId)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Не существует растения пользователя с таким id.");
+            }
+            records = wateringRecordRepository.findByUserPlantId(plantId);
+        } else {
+            records = wateringRecordRepository.findAll();
+        }
+
+        if (dateFrom != null) {
+            records = records.stream()
+                    .filter(r -> !r.getDate().isBefore(dateFrom))
+                    .collect(Collectors.toList());
+        }
+
+        if (dateTo != null) {
+            records = records.stream()
+                    .filter(r -> !r.getDate().isAfter(dateTo))
+                    .collect(Collectors.toList());
+        }
+
+        records.sort((a, b) -> b.getDate().compareTo(a.getDate()));
+
+        return records;
     }
 
     /**

@@ -443,3 +443,23 @@ function logout() {
         window.location.href = 'index.html';
     }
 }
+
+function exportToExcel() {
+    const plantId = document.getElementById('filter-plant').value;
+    const dateFrom = document.getElementById('filter-date-from').value;
+    const dateTo = document.getElementById('filter-date-to').value;
+
+    let url = `${API_URL}/watering-records/export/excel`;
+    const params = new URLSearchParams();
+
+    if (plantId) params.append('plantId', plantId);
+    if (dateFrom) params.append('dateFrom', dateFrom);
+    if (dateTo) params.append('dateTo', dateTo);
+
+    if (params.toString()) {
+        url += '?' + params.toString();
+    }
+
+    window.location.href = url;
+}
+
