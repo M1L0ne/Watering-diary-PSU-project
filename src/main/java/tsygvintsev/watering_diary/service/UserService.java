@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import tsygvintsev.watering_diary.entity.User;
 import tsygvintsev.watering_diary.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     /**
      * Получить список всех пользователей.
      *
@@ -26,6 +29,18 @@ public class UserService {
      */
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    /**
+     * Авторизация пользователя.
+     * @param login логин
+     * @param rawPassword пароль в открытом виде
+     * @return true если авторизация успешна
+     */
+    public boolean authenticate(String login, String rawPassword) {
+        return userRepository.findByLogin(login)
+                .filter(user -> passwordEncoder.matches(rawPassword, user.getPassword()))
+                .isPresent();
     }
 
     /**
@@ -40,6 +55,18 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Не существует пользователя с таким id."));
+    }
+
+    /**
+     * Получить пользователя по логину.
+     *
+     * @param login уникальный логин пользователя
+     * @return найденный пользователь из базы данных
+     * @throws ResponseStatusException если пользователь с таким логином не найден
+     */
+    public User getUserByLogin(String login) {
+        return userRepository.findByLogin(login)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не найден"));
     }
 
     /**
@@ -60,6 +87,13 @@ public class UserService {
                     "Пользователь с таким логином уже существует.");
         }
 
+        if (user.getPassword().length() < 6) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Пароль должен быть не меньше 6 символов.");
+        }
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         return userRepository.save(user);
     }
 
@@ -79,7 +113,11 @@ public class UserService {
                 ));
 
         if (updatedUser.getPassword() != null) {
-            user.setPassword(updatedUser.getPassword());
+            if (updatedUser.getPassword().length() < 6) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Пароль должен быть не меньше 6 символов.");
+            }
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
         if (updatedUser.getName() != null) {
             user.setName(updatedUser.getName());

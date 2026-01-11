@@ -259,10 +259,14 @@ async function calculateRecommendation() {
         document.getElementById('detail-height').textContent = plant.high || 30;
 
         const errorBlock = document.getElementById('detail-error-block');
-        let errorRateNum = lastRecord.errorRateK;
-        if (lastRecord && errorRateNum !== 0 && errorRateNum !== null) {
+        let errorRateNum = lastRecord ? lastRecord.errorRateK : 0;
 
-            let errorText = '';
+        let errorText = 'нет предыдущих записей';
+        let prevVolumeText = '-';
+        let showPreviousRows = false;
+
+        if (lastRecord && errorRateNum !== 0) {
+            showPreviousRows = true;
 
             if (errorRateNum < 0) {
                 errorRateNum *= -1;
@@ -270,15 +274,13 @@ async function calculateRecommendation() {
             } else {
                 errorText = `недолив ${errorRateNum} мл`;
             }
-
-            document.getElementById('detail-previous-volume').textContent = lastRecord.volumeWatering;
-            document.getElementById('detail-previous-error').textContent = errorText;
-            document.getElementById('detail-previous-volume-row').style.display = 'flex';
-            document.getElementById('detail-previous-error-row').style.display = 'flex';
-        } else {
-            document.getElementById('detail-previous-volume-row').style.display = 'none';
-            document.getElementById('detail-previous-error-row').style.display = 'none';
+            prevVolumeText = lastRecord.volumeWatering;
         }
+
+        document.getElementById('detail-previous-volume').textContent = prevVolumeText;
+        document.getElementById('detail-previous-error').textContent = errorText;
+        document.getElementById('detail-previous-volume-row').style.display = showPreviousRows ? 'flex' : 'none';
+        document.getElementById('detail-previous-error-row').style.display = showPreviousRows ? 'flex' : 'none';
 
         document.getElementById('recommendation').style.display = 'block';
 
