@@ -9,6 +9,7 @@ import tsygvintsev.watering_diary.service.UserService;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Контроллер для управления пользователями.
@@ -41,6 +42,28 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Integer id) {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+    }
+
+    /**
+     * Авторизация пользователя.
+     *
+     * @param credentials JSON с login и password
+     * @return ResponseEntity: 200 OK или 401
+     */
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
+        String login = credentials.get("login");
+        String password = credentials.get("password");
+
+        if (userService.authenticate(login, password)) {
+            Map<String, Object> response = Map.of(
+                    "success", true,
+                    "userId", userService.getUserByLogin(login).getId(),
+                    "login", login
+            );
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.status(401).body(Map.of("error", "Неверный логин/пароль"));
     }
 
     /**

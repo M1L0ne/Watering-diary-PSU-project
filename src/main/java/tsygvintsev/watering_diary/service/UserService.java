@@ -32,6 +32,18 @@ public class UserService {
     }
 
     /**
+     * Авторизация пользователя.
+     * @param login логин
+     * @param rawPassword пароль в открытом виде
+     * @return true если авторизация успешна
+     */
+    public boolean authenticate(String login, String rawPassword) {
+        return userRepository.findByLogin(login)
+                .filter(user -> passwordEncoder.matches(rawPassword, user.getPassword()))
+                .isPresent();
+    }
+
+    /**
      * Получить пользователя по ID.
      *
      * @param id уникальный идентификатор пользователя
@@ -43,6 +55,18 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Не существует пользователя с таким id."));
+    }
+
+    /**
+     * Получить пользователя по логину.
+     *
+     * @param login уникальный логин пользователя
+     * @return найденный пользователь из базы данных
+     * @throws ResponseStatusException если пользователь с таким логином не найден
+     */
+    public User getUserByLogin(String login) {
+        return userRepository.findByLogin(login)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не найден"));
     }
 
     /**

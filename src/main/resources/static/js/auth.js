@@ -21,21 +21,22 @@ async function loginUser(event) {
     }
 
     try {
-        const response = await fetch(`${API_URL}/users`);
+        const response = await fetch(`${API_URL}/users/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ login: loginValue, password: passwordValue })
+        });
 
-        if (!response.ok) {
-            throw new Error('Ошибка подключения к серверу');
-        }
+        const data = await response.json();
 
-        const users = await response.json();
-        const user = users.find(u => u.login === loginValue && u.password === passwordValue);
-
-        if (user) {
-            localStorage.setItem('currentUserId', user.id);
-            localStorage.setItem('currentUserLogin', user.login);
+        if (data.success) {
+            localStorage.setItem('currentUserId', data.userId);
+            localStorage.setItem('currentUserLogin', data.login);
             window.location.href = 'profile.html';
         } else {
-            showError('Неверный логин или пароль');
+            showError(data.error || 'Неверный логин или пароль');
         }
 
     } catch (error) {
