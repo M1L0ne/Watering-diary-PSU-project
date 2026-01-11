@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import tsygvintsev.watering_diary.entity.User;
 import tsygvintsev.watering_diary.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 
@@ -18,6 +19,8 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     /**
      * Получить список всех пользователей.
@@ -65,6 +68,8 @@ public class UserService {
                     "Пароль должен быть не меньше 6 символов.");
         }
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         return userRepository.save(user);
     }
 
@@ -84,7 +89,7 @@ public class UserService {
                 ));
 
         if (updatedUser.getPassword() != null) {
-            user.setPassword(updatedUser.getPassword());
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
         if (updatedUser.getName() != null) {
             user.setName(updatedUser.getName());
