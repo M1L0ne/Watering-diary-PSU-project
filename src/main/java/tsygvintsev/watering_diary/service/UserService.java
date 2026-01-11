@@ -89,6 +89,10 @@ public class UserService {
                 ));
 
         if (updatedUser.getPassword() != null) {
+            if (updatedUser.getPassword().length() < 6) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Пароль должен быть не меньше 6 символов.");
+            }
             user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
         if (updatedUser.getName() != null) {
