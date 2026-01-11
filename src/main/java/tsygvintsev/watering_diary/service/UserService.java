@@ -60,6 +60,11 @@ public class UserService {
                     "Пользователь с таким логином уже существует.");
         }
 
+        if (user.getPassword().length() < 6) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Пароль должен быть не меньше 6 символов.");
+        }
+
         return userRepository.save(user);
     }
 

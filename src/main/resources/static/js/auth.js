@@ -77,10 +77,15 @@ async function registerUser(event) {
             body: JSON.stringify(userData)
         });
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Ошибка регистрации');
+    if (!response.ok) {
+        let errorMessage = 'Ошибка регистрации';
+        const errorBody = await response.json();
+        if (errorBody && errorBody.message) {
+            errorMessage = errorBody.message;
         }
+
+        throw new Error(errorMessage);
+    }
 
         const newUser = await response.json();
 
