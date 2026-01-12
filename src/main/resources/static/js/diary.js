@@ -457,6 +457,7 @@ function exportToExcel() {
     if (plantId) params.append('plantId', plantId);
     if (dateFrom) params.append('dateFrom', dateFrom);
     if (dateTo) params.append('dateTo', dateTo);
+    params.append('userId', currentUserId);
 
     if (params.toString()) {
         url += '?' + params.toString();

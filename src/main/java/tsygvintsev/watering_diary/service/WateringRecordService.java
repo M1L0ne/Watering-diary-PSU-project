@@ -85,17 +85,19 @@ public class WateringRecordService {
      * @param dateTo конечная дата (необязательно)
      * @return список записей полива
      */
-    public List<WateringRecord> getFilteredRecords(Integer plantId, LocalDate dateFrom, LocalDate dateTo) {
-        List<WateringRecord> records;
+    public List<WateringRecord> getFilteredRecords(Integer plantId, LocalDate dateFrom, LocalDate dateTo, Integer userId) {
+        List<UserPlant> userPlants = userPlantRepository.findByUserIdOrderById(userId);
+        List<Integer> userPlantIds = userPlants.stream()
+                .map(UserPlant::getId)
+                .collect(Collectors.toList());
+
+        List<WateringRecord> records = wateringRecordRepository
+                .findByUserPlantIdInOrderByDateDesc(userPlantIds);
 
         if (plantId != null) {
-            if (!userPlantRepository.existsById(plantId)) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Не существует растения пользователя с таким id.");
-            }
-            records = wateringRecordRepository.findByUserPlantId(plantId);
-        } else {
-            records = wateringRecordRepository.findAll();
+            records = records.stream()
+                    .filter(r -> r.getUserPlantId().equals(plantId))
+                    .collect(Collectors.toList());
         }
 
         if (dateFrom != null) {
@@ -109,8 +111,6 @@ public class WateringRecordService {
                     .filter(r -> !r.getDate().isAfter(dateTo))
                     .collect(Collectors.toList());
         }
-
-        records.sort((a, b) -> b.getDate().compareTo(a.getDate()));
 
         return records;
     }

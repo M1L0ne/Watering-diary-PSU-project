@@ -2,7 +2,6 @@ package tsygvintsev.watering_diary.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import tsygvintsev.watering_diary.entity.Conditions;
 import tsygvintsev.watering_diary.entity.WateringRecord;
 
 import java.time.LocalDate;
@@ -19,4 +18,5 @@ public interface WateringRecordRepository extends JpaRepository<WateringRecord, 
     Optional<WateringRecord> findFirstByUserPlantIdOrderByDateDesc(Integer userPlantId);
     Optional<WateringRecord> findFirstByUserPlantIdAndDateBeforeOrderByDateDesc(
             Integer userPlantId, LocalDate date);
+    List<WateringRecord> findByUserPlantIdInOrderByDateDesc(List<Integer> userPlantIds);
 }

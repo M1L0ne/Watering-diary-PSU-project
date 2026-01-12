@@ -13,4 +13,5 @@ import java.util.List;
 public interface UserPlantRepository extends JpaRepository<UserPlant, Integer> {
     boolean existsByNameAndPlantTypeIdAndUserId(String name, Integer plantTypeId, Integer userId);
     List<UserPlant> findByUserId(Integer userId);
+    List<UserPlant> findByUserIdOrderById(Integer userId);
 }

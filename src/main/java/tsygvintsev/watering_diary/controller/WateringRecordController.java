@@ -140,6 +140,7 @@ public class WateringRecordController {
             @RequestParam(required = false) Integer plantId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
+            @RequestParam Integer userId,
             HttpServletResponse response) throws IOException {
 
         response.setContentType("application/octet-stream");
@@ -151,7 +152,7 @@ public class WateringRecordController {
         String headerValue = "attachment; filename=watering_records_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
 
-        List<WateringRecord> listRecords = wateringRecordService.getFilteredRecords(plantId, dateFrom, dateTo);
+        List<WateringRecord> listRecords = wateringRecordService.getFilteredRecords(plantId, dateFrom, dateTo, userId);
 
         WateringRecordExcelExporter excelExporter = new WateringRecordExcelExporter(listRecords);
         excelExporter.export(response);
